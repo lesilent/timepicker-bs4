@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" integrity="sha512-rt/SrQ4UNIaGfDyEXZtNcyWvQeOq0QLygHluFQcSjaGB04IxWhal71tKuzP6K8eYXYB6vJV4pHkXcmFGGQ1/0w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js" integrity="sha512-igl8WEUuas9k5dtnhKqyyld6TzzRjvMqLC79jkgT3z02FvJyHAuUtyemm/P/jYSne1xwFI06ezQxEwweaiV7VA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer=""defer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.4/dayjs.min.js" integrity="sha512-Ot7ArUEhJDU0cwoBNNnWe487kjL5wAOsIYig8llY/l0P2TUFwgsAHVmrZMHsT8NGo+HwkjTJsNErS6QqIkBxDw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js" integrity="sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
+<script src="js/timepicker-bs4.js?" defer="defer"></script>
+</head>
+<body>
+<div class="container py-3">
+<h1>timepicker-bs4</h1>
+<h2>Examples</h2>
+<div class="card">
+<div class="card-header">Basic Example</div>
+<div class="card-body">
+<div class="row justify-content-start">
+<div class="form-group col-6">
+<label for="start_time">Start Time:</label>
+<input type="text" id="start_time" class="form-control" name="start_time" autocomplete="off" />
+</div><!-- /.form-group -->
+</div><!-- /.row -->
+</div><!-- /.card-body -->
+</div><!-- /card -->
+<br />
+<div class="card">
+<div class="card-header">Example with min and max times (9AM - 5PM)</div>
+<div class="card-body">
+<div class="row justify-content-start">
+<div class="form-group col-6">
+<label for="end_time">End Time:</label>
+<input type="text" id="end_time" class="form-control" name="end_time" min="09:00" max="17:00" autocomplete="off" />
+</div><!-- /.form-group -->
+</div><!-- /.row -->
+</div><!-- /.card-body -->
+</div><!-- /card -->
+<br />
+<div class="card">
+<div class="card-header">Example with toggle button and 15 minute step</div>
+<div class="card-body">
+<div class="row justify-content-start">
+<div class="form-group col-6">
+<label for="appt_time">Appointment Time:</label>
+<div class="input-group">
+<input type="text" id="appt_time" class="form-control" name="appt_time" min="09:00" max="17:00" step="900" autocomplete="off" />
+<div class="input-group-append"><button type="button" class="btn btn-outline-secondary" data-toggle="timepicker"><i class="far fa-clock"></i></button></div>
+</div>
+</div><!-- /.form-group -->
+</div><!-- /.row -->
+</div><!-- /.card-body -->
+</div><!-- /card -->
+<br />
+<div class="card">
+<div class="card-header">Example with odd step time</div>
+<div class="card-body">
+<div class="row justify-content-start">
+<div class="form-group col-6">
+<label for="meet_time">Meeting Time:</label>
+<input type="text" id="odd_time" class="form-control" name="odd_time" min="09:00" max="17:00" step="420" autocomplete="off" />
+</div><!-- /.form-group -->
+</div><!-- /.row -->
+</div><!-- /.card-body -->
+</div><!-- /card -->
+</div><!-- /.container -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+	jQuery('#start_time, #end_time, #appt_time, #meet_time, #odd_time').timepicker({
+
+	});
+});
+</script>
+</body>
+</html>
