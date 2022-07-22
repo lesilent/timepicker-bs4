@@ -42,7 +42,7 @@ jQuery('#meet_time').timepicker();
 
 | Option | Default | Description |
 | --- | :---: | --- |
-| `format` | `hh:mm&nbsp;A` | Time format using [Dayjs format](https://day.js.org/docs/en/display/format). |
+| `format` | <span style="white-space:nowrap">`hh:mm A`</span> | Time format using [Dayjs format](https://day.js.org/docs/en/display/format). |
 | `maxTime` | `null` | The maximum allowed time in HH:mm format. This can also be specified using a "max" attribute on the input tag. |
 | `minDate` | `null` | The minimum allowed date in HH:mm format. This can also be specified using a "min" attribute on the input tag. |
 | `minScreenWidth` | `576` | Minimum screen width where timepicker is enabled. |
