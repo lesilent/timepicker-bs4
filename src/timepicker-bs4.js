@@ -377,7 +377,7 @@ function updatePicker($input)
 		+ '<td><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="meridiem" data-step="-1" href="javascript:void(0)"><i class="fas fa-chevron-down fa-lg"></i></a></td>'
 		+ '</tr></table></div>'
 		+ '<div class="d-flex justify-content-between">'
-		+ '<div' + (clock_enabled ? '' : 'class="d-none"') + '><button type="button" class="btn btn-link input-toggle-btn" data-input="clock"><i class="far fa-clock fa-fw"></i></button><button type="button" class="btn btn-link input-toggle-btn" data-input="keyboard"><i class="far fa-keyboard fa-fw"></i></button></div>'
+		+ '<div' + (clock_enabled ? '' : ' class="d-none"') + '><button type="button" class="btn btn-link input-toggle-btn" data-input="clock"><i class="far fa-clock fa-fw"></i></button><button type="button" class="btn btn-link input-toggle-btn" data-input="keyboard"><i class="far fa-keyboard fa-fw"></i></button></div>'
 		+ '<div><button type="button" class="btn btn-secondary mx-1 cancel-btn" data-dismiss="popover">Cancel</button><button type="button" class="btn btn-primary mx-1 submit-btn">OK</button></div>'
 		+ '</div>';
 
