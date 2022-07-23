@@ -174,9 +174,17 @@ function updateView($input)
 	var view = $input.data('view') || 'hour';
 	var viewTime = $input.data('viewtime');
 	var options = $input.data('options');
+	var step = options.step || 60;
+	var submit_disabled = false;
+	if (60 % step > 0)
+	{
+		var minTime = options.minTime || dayjs().startOf('day');
+		submit_disabled = ((viewTime.diff(viewTime.startOf('day'), 'second') - minTime.diff(minTime.startOf('day'), 'second')) % step > 0);
+	}
 	var input_id = $input.attr('id');
 	var $content = jQuery('#' + input_id + '-picker-content').attr('data-view', view);
-	$content.find('.submit-btn').prop('disabled', (options.minTime && viewTime.isBefore(options.minTime, 'second'))
+	$content.find('.submit-btn').prop('disabled', submit_disabled
+		|| (options.minTime && viewTime.isBefore(options.minTime, 'second'))
 		|| (options.maxTime && viewTime.isAfter(options.maxTime, 'second')));
 	var number = null, position = null, format;
 	switch (view)
@@ -274,7 +282,7 @@ function updatePicker($input)
 	var now = dayjs();
 	var minTime = options.minTime || dayjs().startOf('day');
 	var maxTime = options.maxTime || dayjs().endOf('day');
-	var step = (options.step < 60) ? Math.floor(60 / options.step) * options.step : options.step;
+	var step = options.step || 60;
 	var validSteps = { hour: {}, minute: {}, second: {}, meridiem: {} };
 	var viewTime = $input.data('viewtime');
 	var iTime = minTime.clone();
@@ -377,7 +385,7 @@ function updatePicker($input)
 		+ '<td><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="meridiem" data-step="-1" href="javascript:void(0)"><i class="fas fa-chevron-down fa-lg"></i></a></td>'
 		+ '</tr></table></div>'
 		+ '<div class="d-flex justify-content-between">'
-		+ '<div' + (clock_enabled ? '' : ' class="d-none"') + '><button type="button" class="btn btn-link input-toggle-btn" data-input="clock"><i class="far fa-clock fa-fw"></i></button><button type="button" class="btn btn-link input-toggle-btn" data-input="keyboard"><i class="far fa-keyboard fa-fw"></i></button></div>'
+		+ '<div class="invisible"><button type="button" class="btn btn-link input-toggle-btn' + (clock_enabled ? ' d-none' : '') + '" data-input="clock"><i class="far fa-clock fa-fw"></i></button><button type="button" class="btn btn-link input-toggle-btn' + (clock_enabled ? '' : ' d-none') + '" data-input="keyboard"><i class="far fa-keyboard fa-fw"></i></button></div>'
 		+ '<div><button type="button" class="btn btn-secondary mx-1 cancel-btn" data-dismiss="popover">Cancel</button><button type="button" class="btn btn-primary mx-1 submit-btn">OK</button></div>'
 		+ '</div>';
 
@@ -427,7 +435,7 @@ function updatePicker($input)
 		var key = event.key.toUpperCase();
 		var hour = $input.data('viewtime').hour();
 		var offset = 0;
-		if (key == 'A'&& hour > 12)
+		if (key == 'A' && hour > 12)
 		{
 			offset = -12;
 		}
@@ -642,9 +650,12 @@ jQuery.fn.timepicker = function (options) {
 				if (arguments.length > 1)
 				{
 					var step = (arguments[1]) ? parseInt(arguments[1]) : 60;
-					input_options.step = step;
-					input_options.unitText = getUnitText(input_options);
-					this.data('options', input_options);
+					if (step > 0 && step < 86400)
+					{
+						input_options.step = step;
+						input_options.unitText = getUnitText(input_options);
+						this.data('options', input_options);
+					}
 				}
 				else
 				{
@@ -768,7 +779,7 @@ jQuery.fn.timepicker = function (options) {
 			input_options.maxTime = maxTime;
 		}
 		var step = $input.attr('step') || $input.data('step') || common_options.step;
-		if (step >= 60 && step < 86400 && step % 60 == 0)
+		if (step > 0 && step < 86400 && 60 % step > 0)
 		{
 			input_options.step = parseInt(step);
 		}

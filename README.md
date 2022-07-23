@@ -6,8 +6,8 @@ time picker for Bootstrap 4
 
 ### Dependencies
 - [jQuery](https://jquery.com/)
-- [bootstrap](https://getbootstrap.com/) v4
-- [fontawesome](https://fontawesome.com/) v5
+- [Bootstrap](https://getbootstrap.com/) v4
+- [Font Awesome](https://fontawesome.com/) v5
 
 ### Manual
 
