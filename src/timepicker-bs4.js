@@ -753,6 +753,10 @@ jQuery.fn.timepicker = function (options) {
 			this.type = 'time';
 			jQuery('[data-toggle="timepicker"][data-target="#' + this.id + '"]').add($input.siblings().find('[data-toggle="timepicker"]')).on('click', function () {
 				$input.focus();
+				if ('showPicker' in HTMLInputElement.prototype)
+				{
+					$input[0].showPicker();
+				}
 			});
 		});
 	}
