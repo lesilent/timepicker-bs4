@@ -179,7 +179,12 @@ function updateView($input)
 	if (60 % step > 0)
 	{
 		var minTime = options.minTime || dayjs().startOf('day');
-		submit_disabled = ((viewTime.diff(viewTime.startOf('day'), 'second') - minTime.diff(minTime.startOf('day'), 'second')) % step > 0);
+		var viewOffset = viewTime.diff(viewTime.startOf('day'), 'second');
+		if (options.format.indexOf('s') < 0)
+		{
+			viewOffset -= (viewOffset % 60);
+		}
+		submit_disabled = ((viewOffset - minTime.diff(minTime.startOf('day'), 'second')) % step > 0);
 	}
 	var input_id = $input.attr('id');
 	var $content = jQuery('#' + input_id + '-picker-content').attr('data-view', view);
@@ -220,19 +225,6 @@ function updateView($input)
 		$content.find('.' + formats[2] + '-btn').text(text);
 		$content.find('.' + formats[2] + '-input').val(text);
 	});
-
-	/*
-	var viewHour = viewTime.format('h'),
-		viewMinute = viewTime.format('mm'),
-		viewSecond = viewTime.format('ss');
-	$content.find('.hour-btn').html(viewHour);
-	$content.find('.hour-input').val(viewHour);
-	$content.find('.minute-btn').text(viewMinute);
-	$content.find('.minute-input').val(viewMinute);
-	$content.find('.second-btn').text(viewSecond);
-	$content.find('.second-input').val(viewSecond);
-	$content.find('.meridiem-btn').text(viewTime.format('A'));
-	*/
 	if (view != prevView)
 	{
 		var $buttons = $content.find('.clock-input-table button').each(function () {
@@ -303,7 +295,7 @@ function updatePicker($input)
 	}
 	if (!viewTime)
 	{
-		viewTime = now;
+		viewTime = now.startOf((options.format.indexOf('s') < 0) ? 'minutes' : 'second');
 	}
 	$input.data('viewtime', viewTime);
 
@@ -630,15 +622,23 @@ jQuery.fn.timepicker = function (options) {
 			case 'maxTime':
 				if (arguments.length > 1)
 				{
-					var newTime = (arguments[1]) ? parseTime(arguments[1], input_options) : null;
-					if (newTime && newTime.isValid())
+					if (arguments[1])
 					{
-						input_options[options] = newDate;
-						this.data('options', input_options);
+						var newTime = parseTime(arguments[1], input_options);
+						if (newTime && newTime.isValid())
+						{
+							input_options[options] = newTime;
+							this.data('options', input_options);
+						}
+						else
+						{
+							console.warning('Invalid ' + options);
+						}
 					}
 					else
 					{
-
+						input_options[options] = null;
+						this.data('options', input_options);
 					}
 				}
 				else
@@ -649,10 +649,23 @@ jQuery.fn.timepicker = function (options) {
 			case 'step':
 				if (arguments.length > 1)
 				{
-					var step = (arguments[1]) ? parseInt(arguments[1]) : 60;
-					if (step > 0 && step < 86400)
+					if (arguments[1])
 					{
-						input_options.step = step;
+						var step = parseInt(arguments[1]);
+						if (step > 0 && step < 86400)
+						{
+							input_options.step = step;
+							input_options.unitText = getUnitText(input_options);
+							this.data('options', input_options);
+						}
+						else
+						{
+							console.warning('Invalid ' + options);
+						}
+					}
+					else
+					{
+						input_options.step = 60;
 						input_options.unitText = getUnitText(input_options);
 						this.data('options', input_options);
 					}
@@ -666,11 +679,11 @@ jQuery.fn.timepicker = function (options) {
 				if (arguments.length > 1)
 				{
 					var newTime = (arguments[1]) ? parseTime(arguments[1], input_options) : null;
-					jQuery(this).data('viewtime', newTime);
+					this.data('viewtime', newTime);
 				}
 				else
 				{
-					return jQuery(this).data('viewtime');
+					return this.data('viewtime');
 				}
 			case 'view':
 				if (arguments.length > 1)
@@ -685,7 +698,7 @@ jQuery.fn.timepicker = function (options) {
 				}
 				else
 				{
-					return jQuery(this).data('view');
+					return this.data('view');
 				}
 			default:
 				break;
