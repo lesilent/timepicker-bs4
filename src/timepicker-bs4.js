@@ -225,6 +225,7 @@ function updateView($input)
 		$content.find('.' + formats[2] + '-btn').text(text);
 		$content.find('.' + formats[2] + '-input').val(text);
 	});
+
 	if (view != prevView)
 	{
 		var $buttons = $content.find('.clock-input-table button').each(function () {
@@ -295,7 +296,7 @@ function updatePicker($input)
 	}
 	if (!viewTime)
 	{
-		viewTime = now.startOf((options.format.indexOf('s') < 0) ? 'minutes' : 'second');
+		viewTime = now.endOf((options.format.indexOf('s') < 0) ? 'minute' : 'second');
 	}
 	$input.data('viewtime', viewTime);
 
@@ -604,18 +605,29 @@ jQuery.fn.timepicker = function (options) {
 	// Handle functions
 	if (typeof options == 'string')
 	{
+		if (this.length < 1)
+		{
+			return undefined;
+		}
 		var input_options = this.data('options') || {};
 		switch (options)
 		{
-			case 'time':
+			case 'format':
 				if (arguments.length > 1)
 				{
-					var newTime = (arguments[1]) ? parseTime(arguments[1], input_options) : null;
-					return this.val((newTime && newTime.isValid()) ? newTime.format(input_options.format) : '');
+					if (arguments[1] && typeof arguments[1] == 'string')
+					{
+						input_options.format = arguments[1];
+						this.data('options', input_options);
+					}
+					else
+					{
+						console.warn('Invalid format');
+					}
 				}
 				else
 				{
-					return parseTime(this.val()) || null;
+					return input_options.format;
 				}
 				break;
 			case 'minTime':
@@ -628,16 +640,18 @@ jQuery.fn.timepicker = function (options) {
 						if (newTime && newTime.isValid())
 						{
 							input_options[options] = newTime;
+							input_options.unitText = getUnitText(input_options);
 							this.data('options', input_options);
 						}
 						else
 						{
-							console.warning('Invalid ' + options);
+							console.warn('Invalid ' + options);
 						}
 					}
 					else
 					{
 						input_options[options] = null;
+						input_options.unitText = getUnitText(input_options);
 						this.data('options', input_options);
 					}
 				}
@@ -652,7 +666,8 @@ jQuery.fn.timepicker = function (options) {
 					if (arguments[1])
 					{
 						var step = parseInt(arguments[1]);
-						if (step > 0 && step < 86400)
+						if (step > 0 && step < 86400
+							&& step % ((input_options.format.indexOf('s') < 0) ? 60 : 1) == 0)
 						{
 							input_options.step = step;
 							input_options.unitText = getUnitText(input_options);
@@ -660,7 +675,7 @@ jQuery.fn.timepicker = function (options) {
 						}
 						else
 						{
-							console.warning('Invalid ' + options);
+							console.warn('Invalid ' + options);
 						}
 					}
 					else
@@ -673,6 +688,17 @@ jQuery.fn.timepicker = function (options) {
 				else
 				{
 					return input_options[options];
+				}
+				break;
+			case 'time':
+				if (arguments.length > 1)
+				{
+					var newTime = (arguments[1]) ? parseTime(arguments[1], input_options) : null;
+					return this.val((newTime && newTime.isValid()) ? newTime.format(input_options.format) : '');
+				}
+				else
+				{
+					return parseTime(this.val()) || null;
 				}
 				break;
 			case 'viewTime':
@@ -689,12 +715,7 @@ jQuery.fn.timepicker = function (options) {
 				if (arguments.length > 1)
 				{
 					var view = arguments[1];
-					$input.data('view', params.view);
-					if (params.viewTime)
-					{
-						$input.data('viewtime', params.viewTime);
-					}
-					updateView($input);
+					updateView(jQuery(this).data('view', view));
 				}
 				else
 				{
@@ -810,15 +831,20 @@ jQuery.fn.timepicker = function (options) {
 		$input.data('timepicker', true);
 
 		var input_id = this.id;
-		var $toggles = $input.siblings().find('[data-toggle="timepicker"]:not([data-target])');
+		var $toggles = [];
 		if (this.id)
 		{
-			$toggles = $toggles.add('[data-toggle="timepicker"][data-target="#' + this.id + '"]');
+			$toggles = jQuery('[data-toggle="timepicker"][data-target="#' + this.id + '"]');
 		}
 		else
 		{
 			input_id = 'input-' + Math.floor(Math.random() * 1000000 + 1);
 			this.id = input_id;
+		}
+		// If no toggles, then find it based on sibilings
+		if ($toggles.length == 0)
+		{
+			$toggles = $input.siblings().find('[data-toggle="timepicker"]:not([data-target])');
 		}
 		$input.toggleClass('timepicker', true);
 
@@ -861,12 +887,7 @@ jQuery.fn.timepicker = function (options) {
 			},
 			content: function () {
 				var options = $input.data('options');
-				var viewTime = parseTime($input.val(), options) || dayjs();
-				if ((options.minTime && viewTime.isBefore(options.minTime, 'second'))
-					|| (options.maxTime && viewTime.isAfter(options.maxTime, 'second')))
-				{
-					viewTime = options.minTime;
-				}
+				var viewTime = parseTime($input.val(), options);
 				$input.data('viewtime', viewTime);
 				return '<div id="' + input_id + '-picker-content" class="timepicker-content" data-view="hour"></div>';
 			}

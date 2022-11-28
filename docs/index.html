@@ -9,68 +9,146 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js" integrity="sha512-igl8WEUuas9k5dtnhKqyyld6TzzRjvMqLC79jkgT3z02FvJyHAuUtyemm/P/jYSne1xwFI06ezQxEwweaiV7VA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer=""defer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.4/dayjs.min.js" integrity="sha512-Ot7ArUEhJDU0cwoBNNnWe487kjL5wAOsIYig8llY/l0P2TUFwgsAHVmrZMHsT8NGo+HwkjTJsNErS6QqIkBxDw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js" integrity="sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
-<script src="js/timepicker-bs4.js?20220724" defer="defer"></script>
+<script src="js/timepicker-bs4.js?20221127" defer="defer"></script>
+<style>
+.form-control::placeholder {
+	opacity: 0.5 !important;
+}
+</style>
 </head>
 <body>
 <div class="container py-3">
-<h1>timepicker-bs4</h1>
-<h2>Examples</h2>
-<div class="card">
-<div class="card-header">Basic Example</div>
-<div class="card-body">
-<div class="row justify-content-start">
-<div class="form-group col-6">
-<label for="start_time">Start Time:</label>
-<input type="text" id="start_time" class="form-control" name="start_time" autocomplete="off" />
-</div><!-- /.form-group -->
+<div class="d-flex justify-content-between">
+	<div><h1 class="display-4">timepicker-bs4</h1></div>
+	<div><a href="https://github.com/lesilent/timepicker-bs4"><i class="fab fa-github fa-lg m-2"></i></a></div>
+</div><!-- /.d-flex -->
+<div class="list-group">
+<div class="list-group-item bg-light font-weight-bolder">Options</div>
+<div class="list-group-item"><form id="custom-form" autocomplete="off" onsubmit="return false">
+<div class="row">
+	<div class="form-group col-6 col-sm-4 col-md-3">
+		<label for="id">ID:</label>
+		<input type="text" id="id" class="form-control" name="id" value="" maxlength="64" />
+	</div><!-- /.form-group -->
+	<div class="form-group col-6 col-sm-4 col-md-3">
+		<label for="name">Name:</label>
+		<input type="text" id="name" class="form-control" name="name" value="" maxlength="64" />
+	</div><!-- /.form-group -->
+	<div class="form-group col-6 col-sm-4 col-md-3">
+		<label for="format">Format:</label>
+		<input type="text" id="format" class="form-control" name="format" value="hh:mm A" readonly="readonly" />
+	</div><!-- /.form-group -->
+	<div class="form-group col-6 col-sm-4 col-md-3">
+		<label for="minTime">Min Time:</label>
+		<input type="text" id="minTime" class="form-control" name="minTime" placeholder="HH:mm" pattern="(([01][0-9]|2[0-3]):[0-5][0-9])?" maxlength="5" data-format="HH:mm" />
+	</div><!-- /.form-group -->
+	<div class="form-group col-6 col-sm-4 col-md-3">
+		<label for="maxTime">Max Time:</label>
+		<input type="text" id="maxTime" class="form-control" name="maxTime" placeholder="HH:mm" pattern="(([01][0-9]|2[0-3]):[0-5][0-9])?" maxlength="5" data-format="HH:mm" />
+	</div><!-- /.form-group -->
+	<div class="form-group col-6 col-sm-4 col-md-3 mb-md-0">
+		<label for="step">Step (seconds):</label>
+		<input type="number" id="step" class="form-control" name="step" min="60" max="86399" pattern="(\d{1,5})?" maxlength="5" />
+	</div><!-- /.form-group -->
+	<div class="form-group col-6 col-sm-4 col-md-3 mb-md-0">
+		<label for="togglebtn">Toggle Button:</label>
+		<select id="togglebtn" class="form-control">
+		<option value="0">No</option>
+		<option value="1">Yes</option>
+		</select>
+	</div><!-- /.form-group -->
+	<div class="form-group col-6 col-sm-4 col-md-3 mb-0">
+		<label for="paramtype">Options:</label>
+		<select id="paramtype" class="form-control">
+		<option value="HTML">HTML</option>
+		<option value="JS">JavaScript</option>
+		</select>
+	</div><!-- /.form-group -->
 </div><!-- /.row -->
-</div><!-- /.card-body -->
-</div><!-- /card -->
-<br />
-<div class="card">
-<div class="card-header">Example with min and max times (9AM - 5PM)</div>
-<div class="card-body">
-<div class="row justify-content-start">
-<div class="form-group col-6">
-<label for="end_time">End Time:</label>
-<input type="text" id="end_time" class="form-control" name="end_time" min="09:00" max="17:00" autocomplete="off" />
-</div><!-- /.form-group -->
-</div><!-- /.row -->
-</div><!-- /.card-body -->
-</div><!-- /card -->
-<br />
-<div class="card">
-<div class="card-header">Example with toggle button and 15 minute step</div>
-<div class="card-body">
-<div class="row justify-content-start">
-<div class="form-group col-6">
-<label for="appt_time">Appointment Time:</label>
-<div class="input-group">
-<input type="text" id="appt_time" class="form-control" name="appt_time" min="09:00" max="17:00" step="900" autocomplete="off" />
-<div class="input-group-append"><button type="button" class="btn btn-outline-secondary" data-toggle="timepicker"><i class="far fa-clock"></i></button></div>
-</div>
-</div><!-- /.form-group -->
-</div><!-- /.row -->
-</div><!-- /.card-body -->
-</div><!-- /card -->
-<br />
-<div class="card">
-<div class="card-header">Example with odd step time</div>
-<div class="card-body">
-<div class="row justify-content-start">
-<div class="form-group col-6">
-<label for="meet_time">Meeting Time:</label>
-<input type="text" id="odd_time" class="form-control" name="odd_time" min="09:00" max="17:00" step="420" autocomplete="off" />
-</div><!-- /.form-group -->
-</div><!-- /.row -->
-</div><!-- /.card-body -->
-</div><!-- /card -->
+</form></div>
+<div class="list-group-item bg-light font-weight-bolder">Result</div>
+<div class="list-group-item">
+	<form class="form-inline">
+	<input type="text" id="timepicker-input" class="form-control timepicker-input" name="time" value="" size="10" autocomplete="off" />
+	<div class="input-group timepicker-input-group d-none">
+		<input type="text" id="timepicker-input-group" class="form-control timepicker-input" name="time" value="" size="10" autocomplete="off" />
+		<div class="input-group-append"><button type="button" class="btn btn-outline-secondary" data-toggle="timepicker" data-target="#timepicker-input-group"><i class="far fa-clock"></i></button></div>
+	</div><!-- /.input-group -->
+	</form>
+</div><!-- /.list-group-item -->
+<div class="list-group-item bg-light font-weight-bolder">HTML</div>
+<div class="list-group-item"><pre class="mb-0"><code id="timepicker-html"><span class="timepicker-input-group d-none">&lt;div class=&quot;input-group&quot;&gt;</span>
+<span id="timepicker-indent" class="d-none">  </span>&lt;input type=&quot;text&quot;<span id="timepicker-id"></span><span id="timepicker-name"></span> class=&quot;form-control timepicker&quot;<span id="timepicker-attribs"></span> /&gt;
+    <span class="timepicker-input-group d-none">&lt;div class=&quot;input-group-append&quot;&gt;
+      &lt;button type=&quot;button&quot; class=&quot;btn btn-outline-secondary&quot; data-toggle=&quot;timepicker&quot;<span id="timepicker-target"></span>&gt;&lt;i class=&quot;far fa-clock&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</span></code></pre></div>
+<div class="list-group-item bg-light font-weight-bolder">JavaScript</div>
+<div class="list-group-item"><pre class="mb-0"><code id="timepicker-javascript">jQuery('input.timepicker').timepicker(<span id="timepicker-params"></span>);</code></pre></div>
+</div><!-- /.list-group -->
 </div><!-- /.container -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-	jQuery('#start_time, #end_time, #appt_time, #meet_time, #odd_time').timepicker({
-
+	jQuery('#minTime, #maxTime').timepicker();
+	var $inputs = jQuery('.timepicker-input').on('change', function () {
+		$inputs.val(this.value);
+	}).timepicker();
+	var defaultFormat = jQuery('#timepicker-input').timepicker('format');
+	var minStep = document.getElementById('step').min;
+	var maxStep = document.getElementById('step').max;
+	var timeRegex = new RegExp('^' + document.getElementById('minTime').pattern.replace(/\?$/, '') + '$');
+	jQuery('#id, #name, #format, #minTime, #maxTime, #step, #paramtype, #togglebtn').on('change', function () {
+		var attribs = '', options = {};
+		this.value = this.value.replace(/^\s+|\s+$/, '');
+		var this_value = this.value;
+		switch (this.id)
+		{
+			case 'id':
+				this_value = this_value.replace(/[^\w\-\.:]+/g, '').replace(/^[^a-z]+/i, '');
+				document.getElementById('timepicker-id').textContent = (this_value.length > 0) ? ' id="' + this_value + '"' : '';
+				document.getElementById('timepicker-target').textContent = (this_value.length > 0) ? ' data-target="#' + this_value + '"' : '';
+				this.value = this_value;
+				break;
+			case 'name':
+				this_value = this_value.replace(/[^\w\-\.:]+/g, '').replace(/^[^a-z]+/i, '');;
+				document.getElementById('timepicker-name').textContent = (this_value.length > 0) ? ' name="' + this_value + '"' : '';
+				this.value = this_value;
+				break;
+			case 'maxTime':
+			case 'minTime':
+				if (!timeRegex.test(this_value))
+				{
+					this.value = '';
+				}
+				break;
+			case 'step':
+				this_value = this_value.replace(/\D+/g, '');
+				if (this_value.length > 0 && (this_value < minStep || this_value > maxStep))
+				{
+					this_value = '';
+				}
+				this.value = this_value;
+				break;
+		}
+		jQuery.each({ format: 'format', minTime: 'min', maxTime: 'max', step: 'step' }, function (option, attr) {
+			var input = document.getElementById(option);
+			var value = input.value;
+			jQuery('.timepicker-input').timepicker(option, value);
+			if (value.length > 0 && !(option == 'format' && value == defaultFormat))
+			{
+				options[option] = value;
+				attribs += ' ' + ((attr == 'format') ? 'data-' : '') + attr + '="' + value + '"';
+			}
+		});
+		var paramtype = document.getElementById('paramtype').value;
+		var togglebtn = (document.getElementById('togglebtn').selectedIndex > 0);
+		jQuery('.timepicker-input-group').toggleClass('d-none', !togglebtn);
+		jQuery('#timepicker-input').toggleClass('d-none', togglebtn);
+		jQuery('#timepicker-indent').toggleClass('d-none', !togglebtn);
+		document.getElementById('timepicker-attribs').textContent = (paramtype == 'HTML') ? attribs : '';
+		document.getElementById('timepicker-params').textContent = (paramtype == 'JS' && attribs.length > 0) ? JSON.stringify(options, null, "\t") : '';
 	});
+	jQuery('#format').val(defaultFormat).prop('readOnly', false);
 });
 </script>
 </body>
