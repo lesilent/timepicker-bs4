@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" integrity="sha512-rt/SrQ4UNIaGfDyEXZtNcyWvQeOq0QLygHluFQcSjaGB04IxWhal71tKuzP6K8eYXYB6vJV4pHkXcmFGGQ1/0w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js" integrity="sha512-igl8WEUuas9k5dtnhKqyyld6TzzRjvMqLC79jkgT3z02FvJyHAuUtyemm/P/jYSne1xwFI06ezQxEwweaiV7VA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer=""defer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js" integrity="sha512-igl8WEUuas9k5dtnhKqyyld6TzzRjvMqLC79jkgT3z02FvJyHAuUtyemm/P/jYSne1xwFI06ezQxEwweaiV7VA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.4/dayjs.min.js" integrity="sha512-Ot7ArUEhJDU0cwoBNNnWe487kjL5wAOsIYig8llY/l0P2TUFwgsAHVmrZMHsT8NGo+HwkjTJsNErS6QqIkBxDw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js" integrity="sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
-<script src="js/timepicker-bs4.js?20221127" defer="defer"></script>
+<script src="js/timepicker-bs4.js?" defer="defer"></script>
 <style>
 .form-control::placeholder {
 	opacity: 0.5 !important;
@@ -114,48 +114,45 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 	jQuery('#minTime, #maxTime').timepicker();
-	var $inputs = jQuery('.timepicker-input').on('change', function () {
-		$inputs.val(this.value);
-	}).timepicker();
-	var defaultFormat = jQuery('#timepicker-input').timepicker('format');
-	var minStep = document.getElementById('step').min;
-	var maxStep = document.getElementById('step').max;
+	var $picker = jQuery('#timepicker-input').timepicker();
+	var defaultFormat = $picker.timepicker('format');
+	var minStep = parseInt(document.getElementById('step').min);
+	var maxStep = parseInt(document.getElementById('step').max);
 	var timeRegex = new RegExp('^' + document.getElementById('minTime').pattern.replace(/\?$/, '') + '$');
 	jQuery('#id, #name, #format, #minTime, #maxTime, #step, #paramtype, #togglebtn').on('change', function () {
 		var attribs = '', options = {};
 		this.value = this.value.replace(/^\s+|\s+$/, '');
-		var this_value = this.value;
 		switch (this.id)
 		{
 			case 'id':
-				this_value = this_value.replace(/[^\w\-\.:]+/g, '').replace(/^[^a-z]+/i, '');
-				document.getElementById('timepicker-id').textContent = (this_value.length > 0) ? ' id="' + this_value + '"' : '';
-				document.getElementById('timepicker-target').textContent = (this_value.length > 0) ? ' data-target="#' + this_value + '"' : '';
-				document.getElementById('id-reset-btn').disabled = !(this_value.length > 0);
-				this.value = this_value;
+				this.value = this.value.replace(/[^\w\-\.:]+/g, '').replace(/^[^a-z]+/i, '');
+				document.getElementById('timepicker-id').textContent = (this.value.length > 0) ? ' id="' + this.value + '"' : '';
+				document.getElementById('timepicker-target').textContent = (this.value.length > 0) ? ' data-target="#' + this.value + '"' : '';
+				document.getElementById('id-reset-btn').disabled = !(this.value.length > 0);
 				break;
 			case 'name':
-				this_value = this_value.replace(/[^\w\-\.:]+/g, '').replace(/^[^a-z]+/i, '');;
-				document.getElementById('timepicker-name').textContent = (this_value.length > 0) ? ' name="' + this_value + '"' : '';
-				document.getElementById('name-reset-btn').disabled = !(this_value.length > 0);
-				this.value = this_value;
+				this.value = this.value.replace(/[^\w\-\.:]+/g, '').replace(/^[^a-z]+/i, '');;
+				document.getElementById('timepicker-name').textContent = (this.value.length > 0) ? ' name="' + this.value + '"' : '';
+				document.getElementById('name-reset-btn').disabled = !(this.value.length > 0);
+				break;
+			case 'format':
+				$picker.val('').datepicker('time', null);
 				break;
 			case 'maxTime':
 			case 'minTime':
-				if (!timeRegex.test(this_value))
+				if (!timeRegex.test(this.value))
 				{
 					this.value = '';
 				}
 				document.getElementById(this.id + '-reset-btn').disabled = !(this.value.length > 0);
 				break;
 			case 'step':
-				this_value = this_value.replace(/\D+/g, '');
-				if (this_value.length > 0 && (this_value < minStep || this_value > maxStep))
+				this.value = this.value.replace(/\D+/g, '');
+				if (this.value.length > 0 && (parseInt(this.value) < minStep || parseInt(this.value) > maxStep))
 				{
-					this_value = '';
+					this.value = '';
 				}
-				document.getElementById('step-reset-btn').disabled = !(this_value.length > 0);
-				this.value = this_value;
+				document.getElementById('step-reset-btn').disabled = !(this.value.length > 0);
 				break;
 		}
 		jQuery.each({ format: 'format', minTime: 'min', maxTime: 'max', step: 'step' }, function (option, attr) {
@@ -171,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		var paramtype = document.getElementById('paramtype').value;
 		var togglebtn = (document.getElementById('togglebtn').selectedIndex > 0);
 		jQuery('.timepicker-input-group').toggleClass('d-none', !togglebtn);
-		jQuery('#timepicker-input').toggleClass('d-none', togglebtn);
+		$picker.toggleClass('d-none', togglebtn);
 		jQuery('#timepicker-indent').toggleClass('d-none', !togglebtn);
 		document.getElementById('timepicker-attribs').textContent = (paramtype == 'HTML') ? attribs : '';
 		document.getElementById('timepicker-params').textContent = (paramtype == 'JS' && attribs.length > 0) ? JSON.stringify(options, null, "\t").replace(/"([^"]+)":/g, '$1:') : '';

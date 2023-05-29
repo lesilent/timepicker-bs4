@@ -629,117 +629,111 @@ jQuery.fn.timepicker = function (options) {
 			return undefined;
 		}
 		var input_options = this.data('options') || {};
+		var single_arg = (arguments.length == 1);
 		switch (options)
 		{
 			case 'format':
-				if (arguments.length > 1)
+				if (single_arg)
 				{
-					if (arguments[1] && typeof arguments[1] == 'string')
-					{
-						input_options.format = arguments[1];
-						this.data('options', input_options);
-					}
-					else
-					{
-						console.warn('Invalid format');
-					}
+					return input_options.format;
+				}
+				else if (arguments[1] && typeof arguments[1] == 'string')
+				{
+					input_options.format = arguments[1];
+					this.data('options', input_options);
 				}
 				else
 				{
-					return input_options.format;
+					console.warn('Invalid format');
 				}
 				break;
 			case 'minTime':
 			case 'maxTime':
-				if (arguments.length > 1)
+				if (single_arg)
 				{
-					if (arguments[1])
+					return input_options[options];
+				}
+				else if (arguments[1])
+				{
+					var newTime = parseTime(arguments[1], input_options);
+					if (newTime && newTime.isValid())
 					{
-						var newTime = parseTime(arguments[1], input_options);
-						if (newTime && newTime.isValid())
-						{
-							input_options[options] = newTime;
-							input_options.unitText = getUnitText(input_options);
-							this.data('options', input_options);
-						}
-						else
-						{
-							console.warn('Invalid ' + options);
-						}
+						input_options[options] = newTime;
+						input_options.unitText = getUnitText(input_options);
+						this.data('options', input_options);
 					}
 					else
 					{
-						input_options[options] = null;
-						input_options.unitText = getUnitText(input_options);
-						this.data('options', input_options);
+						console.warn('Invalid ' + options);
 					}
 				}
 				else
 				{
-					return input_options[options];
+					input_options[options] = null;
+					input_options.unitText = getUnitText(input_options);
+					this.data('options', input_options);
 				}
 				break;
 			case 'step':
-				if (arguments.length > 1)
-				{
-					if (arguments[1])
-					{
-						var step = parseInt(arguments[1]);
-						if (step > 0 && step < 86400
-							&& step % (hasFormat(input_options.format, 's') ? 1 : 60) == 0)
-						{
-							input_options.step = step;
-							input_options.unitText = getUnitText(input_options);
-							this.data('options', input_options);
-						}
-						else
-						{
-							console.warn('Invalid ' + options);
-						}
-					}
-					else
-					{
-						input_options.step = 60;
-						input_options.unitText = getUnitText(input_options);
-						this.data('options', input_options);
-					}
-				}
-				else
+				if (single_arg)
 				{
 					return input_options[options];
 				}
-				break;
-			case 'time':
-				if (arguments.length > 1)
+				else if (arguments[1])
 				{
-					var newTime = (arguments[1]) ? parseTime(arguments[1], input_options) : null;
-					return this.val((newTime && newTime.isValid()) ? newTime.format(input_options.format) : '');
+					var step = parseInt(arguments[1]);
+					if (step > 0 && step < 86400
+						&& step % (hasFormat(input_options.format, 's') ? 1 : 60) == 0)
+					{
+						input_options.step = step;
+						input_options.unitText = getUnitText(input_options);
+						this.data('options', input_options);
+					}
+					else
+					{
+						console.warn('Invalid ' + options);
+					}
 				}
 				else
 				{
+					input_options.step = 60;
+					input_options.unitText = getUnitText(input_options);
+					this.data('options', input_options);
+				}
+				break;
+			case 'time':
+				if (single_arg)
+				{
 					return parseTime(this.val()) || null;
+				}
+				else
+				{
+					var newTime = (arguments[1]) ? parseTime(arguments[1], input_options) : null;
+					this.val((newTime && newTime.isValid()) ? newTime.format(input_options.format) : '');
 				}
 				break;
 			case 'viewTime':
-				if (arguments.length > 1)
+				if (single_arg)
+				{
+					return this.data('viewtime');
+				}
+				else
 				{
 					var newTime = (arguments[1]) ? parseTime(arguments[1], input_options) : null;
 					this.data('viewtime', newTime);
 				}
-				else
-				{
-					return this.data('viewtime');
-				}
+				break;
 			case 'view':
-				if (arguments.length > 1)
+				if (single_arg)
+				{
+					return this.data('view');
+				}
+				else
 				{
 					var view = arguments[1];
 					updateView(jQuery(this).data('view', view));
 				}
-				else
-				{
-					return this.data('view');
-				}
+				break;
 			default:
 				break;
 		}
