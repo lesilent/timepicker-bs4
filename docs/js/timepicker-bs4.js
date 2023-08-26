@@ -17,7 +17,6 @@ var settings = {
 	format: 'hh:mm A',
 	maxTime: null,
 	minTime: null,
-	minScreenWidth: 576,
 	step: 60
 };
 
@@ -615,7 +614,7 @@ function updatePicker($input)
  */
 jQuery.fn.timepicker = function (options) {
 	// Get boostrap version
-	var bs_version = parseInt(jQuery.fn.dropdown.Constructor.VERSION.replace(/\..+$/, ''));
+	var bs_version = parseInt(((typeof bootstrap == 'object') ? bootstrap.Dropdown.VERSION : jQuery.fn.dropdown.Constructor.VERSION || '0').replace(/\..+$/, ''));
 	if (bs_version < 4)
 	{
 		console.error('Invalid bootstrap version ' + bs_version + ' detected');
@@ -791,23 +790,6 @@ jQuery.fn.timepicker = function (options) {
 	}
 	var common_options = jQuery.extend({}, settings, options);
 
-	// Convert to date type if screen doesn't meet the mininum width or an IOS device
-	if ((common_options.minScreenWidth && window.screen.width < common_options.minScreenWidth)
-		|| /iPad|iPhone|iPod/.test(navigator.userAgent))
-	{
-		return this.each(function () {
-			var $input = jQuery(this);
-			this.type = 'time';
-			jQuery('[data-toggle="timepicker"][data-target="#' + this.id + '"]').add($input.siblings().find('[data-toggle="timepicker"]')).on('click', function () {
-				$input.focus();
-				if ('showPicker' in HTMLInputElement.prototype)
-				{
-					$input[0].showPicker();
-				}
-			});
-		});
-	}
-
 	// Initialize the inputs
 	return this.each(function () {
 		var $input = jQuery(this);
@@ -859,7 +841,7 @@ jQuery.fn.timepicker = function (options) {
 		{
 			$toggles = $input.siblings().find('[data-toggle="timepicker"]:not([data-target])');
 		}
-		$input.toggleClass('timepicker', true);
+		$input.addClass('timepicker');
 
 		var $label = jQuery('label[for="' + input_id + '"]');
 		$input.on('change', function () {
