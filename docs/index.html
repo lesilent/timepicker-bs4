@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>timepicker-bs4</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" integrity="sha512-rt/SrQ4UNIaGfDyEXZtNcyWvQeOq0QLygHluFQcSjaGB04IxWhal71tKuzP6K8eYXYB6vJV4pHkXcmFGGQ1/0w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js" integrity="sha512-igl8WEUuas9k5dtnhKqyyld6TzzRjvMqLC79jkgT3z02FvJyHAuUtyemm/P/jYSne1xwFI06ezQxEwweaiV7VA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
@@ -20,7 +21,7 @@
 <div class="container py-3">
 <div class="d-flex justify-content-between">
 	<div><h1 class="display-4">timepicker-bs4</h1></div>
-	<div><a href="https://github.com/lesilent/timepicker-bs4"><i class="fab fa-github fa-lg m-2"></i></a></div>
+	<div><a href="https://github.com/lesilent/timepicker-bs4" title="timepicker-bs4 on GitHub"><i class="fab fa-github fa-lg m-2"></i></a></div>
 </div><!-- /.d-flex -->
 <div class="list-group">
 <div class="list-group-item bg-light font-weight-bolder">Options</div>
@@ -29,21 +30,21 @@
 	<div class="form-group col-6 col-sm-4 col-md-3">
 		<label for="id">ID:</label>
 		<div class="input-group">
-		<input type="text" id="id" class="form-control" name="id" value="" maxlength="64" />
-		<div class="input-group-append"><button type="button" id="id-reset-btn" class="btn btn-outline-secondary" disabled="disabled"><i class="far fa-times-circle"></i></button></div>
+		<input type="text" id="id" class="form-control options-control" name="id" value="" maxlength="64" />
+		<div class="input-group-append"><button type="button" id="id-reset-btn" class="btn btn-outline-secondary" disabled="disabled" title="Reset ID"><i class="far fa-times-circle"></i></button></div>
 		</div><!-- /.input-group -->
 	</div><!-- /.form-group -->
 	<div class="form-group col-6 col-sm-4 col-md-3">
 		<label for="name">Name:</label>
 		<div class="input-group">
-		<input type="text" id="name" class="form-control" name="name" value="" maxlength="64" />
-		<div class="input-group-append"><button type="button" id="name-reset-btn" class="btn btn-outline-secondary" disabled="disabled"><i class="far fa-times-circle"></i></button></div>
+		<input type="text" id="name" class="form-control options-control" name="name" value="" maxlength="64" autocomplete="off" />
+		<div class="input-group-append"><button type="button" id="name-reset-btn" class="btn btn-outline-secondary" disabled="disabled" title="Reset Name"><i class="far fa-times-circle"></i></button></div>
 		</div><!-- /.input-group -->
 	</div><!-- /.form-group -->
 	<div class="form-group col-6 col-sm-4 col-md-3">
 		<label for="format">Format:</label>
 		<div class="input-group">
-		<input type="text" id="format" class="form-control" name="format" value="hh:mm A" readonly="readonly" />
+		<input type="text" id="format" class="form-control options-control" name="format" value="hh:mm A" readonly="readonly" />
 		<div class="input-group-append">
 		<button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
 		<div id="format-dropdown-menu" class="dropdown-menu dropdown-menu-right">
@@ -56,34 +57,34 @@
 	<div class="form-group col-6 col-sm-4 col-md-3">
 		<label for="minTime">Min Time:</label>
 		<div class="input-group">
-		<input type="text" id="minTime" class="form-control" name="minTime" placeholder="HH:mm" pattern="(([01][0-9]|2[0-3]):[0-5][0-9])?" maxlength="5" data-format="HH:mm" />
-		<div class="input-group-append"><button type="button" id="minTime-reset-btn" class="btn btn-outline-secondary" disabled="disabled"><i class="far fa-times-circle"></i></button></div>
+		<input type="text" id="minTime" class="form-control options-control" name="minTime" placeholder="HH:mm" pattern="(([01][0-9]|2[0-3]):[0-5][0-9])?" maxlength="5" data-format="HH:mm" />
+		<div class="input-group-append"><button type="button" id="minTime-reset-btn" class="btn btn-outline-secondary" disabled="disabled" title="Reset Option"><i class="far fa-times-circle"></i></button></div>
 		</div><!-- /.input-group -->
 	</div><!-- /.form-group -->
 	<div class="form-group col-6 col-sm-4 col-md-3">
 		<label for="maxTime">Max Time:</label>
 		<div class="input-group">
-		<input type="text" id="maxTime" class="form-control" name="maxTime" placeholder="HH:mm" pattern="(([01][0-9]|2[0-3]):[0-5][0-9])?" maxlength="5" data-format="HH:mm" />
-		<div class="input-group-append"><button type="button" id="maxTime-reset-btn" class="btn btn-outline-secondary " disabled="disabled"><i class="far fa-times-circle"></i></button></div>
+		<input type="text" id="maxTime" class="form-control options-control" name="maxTime" placeholder="HH:mm" pattern="(([01][0-9]|2[0-3]):[0-5][0-9])?" maxlength="5" data-format="HH:mm" />
+		<div class="input-group-append"><button type="button" id="maxTime-reset-btn" class="btn btn-outline-secondary " disabled="disabled" title="Reset Option"><i class="far fa-times-circle"></i></button></div>
 		</div><!-- /.input-group -->
 	</div><!-- /.form-group -->
 	<div class="form-group col-6 col-sm-4 col-md-3">
 		<label for="step">Step (seconds):</label>
 		<div class="input-group">
-		<input type="number" id="step" class="form-control" name="step" min="60" max="86399" pattern="(\d{1,5})?" maxlength="5" />
-		<div class="input-group-append"><button type="button" id="step-reset-btn" class="btn btn-outline-secondary" disabled="disabled"><i class="far fa-times-circle"></i></button></div>
+		<input type="number" id="step" class="form-control options-control" name="step" min="60" max="86399" pattern="(\d{1,5})?" maxlength="5" />
+		<div class="input-group-append"><button type="button" id="step-reset-btn" class="btn btn-outline-secondary" disabled="disabled" title="Reset Option"><i class="far fa-times-circle"></i></button></div>
 		</div><!-- /.input-group -->
 	</div><!-- /.form-group -->
 	<div class="form-group col-6 col-sm-4 col-md-3">
 		<label for="togglebtn">Toggle Button:</label>
-		<select id="togglebtn" class="form-control">
+		<select id="togglebtn" class="form-control options-control" name="togglebtn">
 		<option value="0">No</option>
 		<option value="1">Yes</option>
 		</select>
 	</div><!-- /.form-group -->
 	<div class="form-group col-6 col-sm-4 col-md-3">
 		<label for="paramtype">Options:</label>
-		<select id="paramtype" class="form-control">
+		<select id="paramtype" class="form-control options-control" name="paramtype">
 		<option value="HTML">HTML</option>
 		<option value="JS">JavaScript</option>
 		</select>
@@ -92,8 +93,10 @@
 </form></div>
 <div class="list-group-item bg-light font-weight-bolder">Result</div>
 <div class="list-group-item">
-	<form class="form-inline">
+	<form class="form-inline" autocomplete="off" onsubmit="return false">
+	<label id="timepicker-input-label" class="mr-sm-2 sr-only" for="timepicker-input">Time:</label>
 	<input type="text" id="timepicker-input" class="form-control timepicker-input" name="time" value="" size="10" autocomplete="off" />
+	<label id="timepicker-input-group-label" class="mr-sm-2 sr-only" for="timepicker-input-group">Time:</label>
 	<div class="input-group timepicker-input-group d-none">
 		<input type="text" id="timepicker-input-group" class="form-control timepicker-input" name="time" value="" size="10" autocomplete="off" />
 		<div class="input-group-append"><button type="button" class="btn btn-outline-secondary" data-toggle="timepicker" data-target="#timepicker-input-group"><i class="far fa-clock"></i></button></div>
@@ -114,47 +117,60 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 	jQuery('#minTime, #maxTime').timepicker();
-	var $picker = jQuery('#timepicker-input').timepicker();
-	var defaultFormat = $picker.timepicker('format');
-	var minStep = parseInt(document.getElementById('step').min);
-	var maxStep = parseInt(document.getElementById('step').max);
-	var timeRegex = new RegExp('^' + document.getElementById('minTime').pattern.replace(/\?$/, '') + '$');
-	jQuery('#id, #name, #format, #minTime, #maxTime, #step, #paramtype, #togglebtn').on('change', function () {
-		var attribs = '', options = {};
-		this.value = this.value.replace(/^\s+|\s+$/, '');
+
+	const $picker = jQuery('#timepicker-input').timepicker();
+	const defaultFormat = $picker.timepicker('format');
+	const minStep = parseInt(document.getElementById('step').min);
+	const maxStep = parseInt(document.getElementById('step').max);
+	const timeRegex = new RegExp('^' + document.getElementById('minTime').pattern.replace(/\?$/, '') + '$');
+	jQuery('.options-control').on('change', function () {
+		if (this.type == 'text')
+		{
+			this.value = this.value.replace(/^\s+|\s+$/, '');
+		}
+		let this_value = this.value;
 		switch (this.id)
 		{
 			case 'id':
-				this.value = this.value.replace(/[^\w\-\.:]+/g, '').replace(/^[^a-z]+/i, '');
-				document.getElementById('timepicker-id').textContent = (this.value.length > 0) ? ' id="' + this.value + '"' : '';
-				document.getElementById('timepicker-target').textContent = (this.value.length > 0) ? ' data-target="#' + this.value + '"' : '';
-				document.getElementById('id-reset-btn').disabled = !(this.value.length > 0);
+				this_value = this_value.replace(/[^\w\-\.:]+/g, '').replace(/^[^a-z]+/i, '');
+				document.getElementById('timepicker-id').textContent = (this_value.length > 0) ? ' id="' + this.value + '"' : '';
+				document.getElementById('timepicker-target').textContent = (this_value.length > 0) ? ' data-target="#' + this.value + '"' : '';
+				document.getElementById('id-reset-btn').disabled = !(this_value.length > 0);
+				this.value = this_value;
 				break;
 			case 'name':
-				this.value = this.value.replace(/[^\w\-\.:]+/g, '').replace(/^[^a-z]+/i, '');;
-				document.getElementById('timepicker-name').textContent = (this.value.length > 0) ? ' name="' + this.value + '"' : '';
-				document.getElementById('name-reset-btn').disabled = !(this.value.length > 0);
+				this_value = this.value.replace(/[^\w\-\.:]+/g, '').replace(/^[^a-z]+/i, '');;
+				document.getElementById('timepicker-name').textContent = (this_value.length > 0) ? ' name="' + this.value + '"' : '';
+				document.getElementById('name-reset-btn').disabled = !(this_value.length > 0);
+				this.value = this_value;
 				break;
 			case 'format':
 				$picker.val('').datepicker('time', null);
 				break;
 			case 'maxTime':
 			case 'minTime':
-				if (!timeRegex.test(this.value))
+				if (!timeRegex.test(this_value))
 				{
-					this.value = '';
+					this_value = '';
 				}
-				document.getElementById(this.id + '-reset-btn').disabled = !(this.value.length > 0);
+				document.getElementById(this.id + '-reset-btn').disabled = !(this_value.length > 0);
+				this.value = this_value;
 				break;
 			case 'step':
-				this.value = this.value.replace(/\D+/g, '');
-				if (this.value.length > 0 && (parseInt(this.value) < minStep || parseInt(this.value) > maxStep))
+				this_value = this_value.replace(/\D+/g, '');
+				if (this_value.length > 0)
 				{
-					this.value = '';
+					this_value = parseInt(this_value);
+					if (this_value < 0 || this_value < minStep || this_value > maxStep)
+					{
+						this_value = '';
+					}
 				}
-				document.getElementById('step-reset-btn').disabled = !(this.value.length > 0);
+				document.getElementById('step-reset-btn').disabled = !(this_value.length > 0);
+				this.value = this_value;
 				break;
 		}
+		var attribs = '', options = {};
 		jQuery.each({ format: 'format', minTime: 'min', maxTime: 'max', step: 'step' }, function (option, attr) {
 			var input = document.getElementById(option);
 			var value = input.value;

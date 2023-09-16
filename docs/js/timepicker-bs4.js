@@ -13,7 +13,7 @@
  * @type {object}
  * @todo add support for additional options
  */
-var settings = {
+const settings = {
 	format: 'hh:mm A',
 	maxTime: null,
 	minTime: null,
@@ -27,9 +27,9 @@ var settings = {
  * 1 = format used for buttons and inputs
  * 2 = the unit/view name
  *
- * @var {array}
+ * @type {array}
  */
-var FORMATS = [
+let FORMATS = [
 	['h', 'h', 'hour'],
 	['m', 'mm', 'minute'],
 	['s', 'ss', 'second'],
@@ -39,39 +39,28 @@ var FORMATS = [
 /**
  * Unit lengths
  *
- * @var {object}
+ * @type {object}
  */
-var UNIT_LENGTHS = { hour: 24, minute: 60, second: 60, meridiem: 2 };
+const UNIT_LENGTHS = { hour: 24, minute: 60, second: 60, meridiem: 2 };
 
 /**
  *
- * @var {string}
+ * @type {string}
  */
-var ACTIVE_CLASS = 'active btn-info';
+const ACTIVE_CLASS = 'active btn-info';
 
 /**
  *
- * @var {string}
+ * @type {string}
  */
-var INACTIVE_CLASS = 'btn-outline-dark border-white';
+ const INACTIVE_CLASS = 'btn-outline-dark border-white';
 
 /**
  * Flag for whether plugin has been initialized
  *
  * @type {boolean}
  */
-var initialized = false;
-
-/**
- * Convert special chararacters html entities
- *
- * @param  {string} str the string to encode
- * @return {string} the encoded string
- */
-function htmlEncode(str)
-{
-	return str.replace(/&/g, '&amp;').replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-}
+let initialized = false;
 
 /**
  * Parse a time string and return a dayjs object
@@ -82,7 +71,7 @@ function htmlEncode(str)
  */
 function parseTime(str, options)
 {
-	var input_time, matches;
+	let input_time, matches;
 	if (typeof str == 'object' && str instanceof dayjs)
 	{
 		return str.isValid() ? str : false;
@@ -93,7 +82,7 @@ function parseTime(str, options)
 		&& (matches[2] === undefined || (parseInt(matches[2]) > -1 && parseInt(matches[2]) < 60))
 		&& (matches[3] === undefined || (parseInt(matches[3]) > -1 && parseInt(matches[3]) < 60)))
 	{
-		var hour = parseInt(matches[1]);
+		let hour = parseInt(matches[1]);
 		if (matches[4])
 		{
 			hour = hour % 12 + ((matches[4].toUpperCase() == 'P') ? 12 : 0);
@@ -116,12 +105,12 @@ function parseTime(str, options)
  */
 function getUnitText(options)
 {
-	var minTime = options.minTime || dayjs().startOf('day');
-	var maxTime = options.maxTime || dayjs().endOf('day');
-	var step = options.step || 60;
-	var valid = { offset: {}, hour: {}, minute: {}, second: {}, meridiem: {}, length: 0 };
-	var iTime = minTime.clone();
-	var unixOffset = minTime.startOf('day').unix();
+	const minTime = options.minTime || dayjs().startOf('day');
+	const maxTime = options.maxTime || dayjs().endOf('day');
+	const step = options.step || 60;
+	let valid = { offset: {}, hour: {}, minute: {}, second: {}, meridiem: {}, length: 0 };
+	let iTime = minTime.clone();
+	const unixOffset = minTime.startOf('day').unix();
 	while (iTime.isBefore(maxTime) || iTime.isSame(maxTime, 'second'))
 	{
 		valid.offset[iTime.unix() - unixOffset] = true;
@@ -134,15 +123,15 @@ function getUnitText(options)
 	}
 
 	// Convert valid units to arrays
-	var unitText = { hour: [], minute: [], second:[], meridiem: [], length: valid.length };
-	for (var i = 0; i < 24; i++)
+	let unitText = { hour: [], minute: [], second:[], meridiem: [], length: valid.length };
+	for (let i = 0; i < 24; i++)
 	{
 		unitText.hour.push((i in valid.hour)
 			? ((i == 0 || i == 12) ? 12 : i % 12)
 			: null);
 	}
 	['minute', 'second'].forEach(function (field) {
-		for (var i = 0; i < 60; i++)
+		for (let i = 0; i < 60; i++)
 		{
 			unitText[field].push((i in valid[field]) ? ((i < 10) ? '0' + i : i) : null);
 		}
@@ -151,7 +140,7 @@ function getUnitText(options)
 	unitText.meridiem.push((1 in valid.meridiem) ? 'PM' : null);
 /*
 	// Craate position arrays
-	for (var i = 1; i < 13; i++)
+	for (let i = 1; i < 13; i++)
 	{
 		position.hour[i] = ((i % 12) in valid.hour || (i % 12 + 12) in valid.hour);
 		position.minute[i] = (i * 5 % 60) in valid.minute;
@@ -183,29 +172,29 @@ function hasFormat(format, searchElement)
  */
 function updateView($input)
 {
-	var prevView = $input.data('prevview');
-	var view = $input.data('view') || 'hour';
-	var viewTime = $input.data('viewtime');
-	var options = $input.data('options');
-	var clock_24 = hasFormat(options.format, 'H');
-	var step = options.step || 60;
-	var submit_disabled = false;
+	const prevView = $input.data('prevview');
+	const view = $input.data('view') || 'hour';
+	const viewTime = $input.data('viewtime');
+	const options = $input.data('options');
+	const clock_24 = hasFormat(options.format, 'H');
+	const step = options.step || 60;
+	let submit_disabled = false;
 	if (60 % step > 0)
 	{
-		var minTime = options.minTime || dayjs().startOf('day');
-		var viewOffset = viewTime.diff(viewTime.startOf('day'), 'second');
+		const minTime = options.minTime || dayjs().startOf('day');
+		let viewOffset = viewTime.diff(viewTime.startOf('day'), 'second');
 		if (!hasFormat(options.format, 's'))
 		{
 			viewOffset -= (viewOffset % 60);
 		}
 		submit_disabled = ((viewOffset - minTime.diff(minTime.startOf('day'), 'second')) % step > 0);
 	}
-	var input_id = $input.attr('id');
-	var $content = jQuery('#' + input_id + '-picker-content').attr('data-view', view);
+	const input_id = $input.attr('id');
+	const $content = jQuery('#' + input_id + '-picker-content').attr('data-view', view);
 	$content.find('.submit-btn').prop('disabled', submit_disabled
 		|| (options.minTime && viewTime.isBefore(options.minTime, 'second'))
 		|| (options.maxTime && viewTime.isAfter(options.maxTime, 'second')));
-	var number = null, position = null, format;
+	let number, position, format;
 	switch (view)
 	{
 		case 'hour':
@@ -234,26 +223,26 @@ function updateView($input)
 			console.warn('Invalid view ' + view);
 			return false;
 	}
-	var text = viewTime.format(format);
+	const text = viewTime.format(format);
 	$content.find('.timepicker-btns button').toggleClass('font-weight-bold', false).filter('[data-unit="' + view + '"]').toggleClass('font-weight-bold', true).text(text);
 	$content.find('.clock-input-table .chevron-btn').data('unit', view);
 
 	FORMATS[0][1] = clock_24 ? 'H' : 'h';
 	FORMATS.forEach(function (formats) {
-		var text = viewTime.format(formats[1]);
+		const text = viewTime.format(formats[1]);
 		$content.find('.' + formats[2] + '-btn').text(text);
 		$content.find('.' + formats[2] + '-input').val(text);
 	});
 
 	if (view != prevView)
 	{
-		var $buttons = $content.find('.clock-input-table button').each(function () {
-			var $this = jQuery(this);
-			var pos = parseInt($this.attr('class').match(/\bpos\-(\d+)/)[1]);
-			var disabled = true;
+		$content.find('.clock-input-table button').each(function () {
+			const $this = jQuery(this);
+			let pos = parseInt($this.attr('class').match(/\bpos\-(\d+)/)[1]);
+			let disabled = true;
 			if (pos > 0)
 			{
-				var positions;
+				let positions;
 				switch (view)
 				{
 					case 'hour':
@@ -289,15 +278,15 @@ function updateView($input)
  */
 function updatePicker($input)
 {
-	var input_id = $input.attr('id');
-	var options = $input.data('options');
-	var now = dayjs();
-	var minTime = options.minTime || dayjs().startOf('day');
-	var maxTime = options.maxTime || dayjs().endOf('day');
-	var step = options.step || 60;
-	var validSteps = { hour: {}, minute: {}, second: {}, meridiem: {} };
-	var viewTime = $input.data('viewtime');
-	var iTime = minTime.clone();
+	const input_id = $input.attr('id');
+	const options = $input.data('options');
+	const now = dayjs();
+	const minTime = options.minTime || dayjs().startOf('day');
+	const maxTime = options.maxTime || dayjs().endOf('day');
+	const step = options.step || 60;
+	let validSteps = { hour: {}, minute: {}, second: {}, meridiem: {} };
+	let viewTime = $input.data('viewtime');
+	let iTime = minTime.clone();
 	while (iTime.isBefore(maxTime) || iTime.isSame(maxTime, 'second'))
 	{
 		validSteps.hour[iTime.hour()] = true;
@@ -320,11 +309,11 @@ function updatePicker($input)
 	$input.data('viewtime', viewTime);
 
 	// Build html
-	var has_second = (hasFormat(options.format, 's') && step % 60 > 0);
-	var clock_24 = hasFormat(options.format, 'H');
-	var clock_enabled = ((step % 300) == 0) && false;
-	var viewHour = viewTime.hour();
-	var html = '<div class="clock-input' + (clock_enabled ? '' : ' d-none') + '">'
+	const has_second = (hasFormat(options.format, 's') && step % 60 > 0);
+	const clock_24 = hasFormat(options.format, 'H');
+	const clock_enabled = ((step % 300) == 0) && false;
+	const viewHour = viewTime.hour();
+	let html = '<div class="clock-input' + (clock_enabled ? '' : ' d-none') + '">'
 		+ '<div class="d-flex justify-content-center align-items-center timepicker-btns">'
 		+ '<div class="btn-group">'
 		+ '<button type="button" class="btn px-2 font-weight-bold hour-btn" data-unit="hour">' + viewTime.format('hh') + '</button>'
@@ -368,11 +357,11 @@ function updatePicker($input)
 					+ '>' + ((viewHour % 12 > 0) ? viewHour % 12 : 12) + '</button>';
 			}
 
-			var pos_hour = position % 12;
-			var pos_minute = pos_hour * 5;
+			const pos_hour = position % 12;
+			const pos_minute = pos_hour * 5;
 
-			var meridiem_class = (position % 3 > 0) ? ' text-light' : '';
-			var meridiem_text = (position % 6 > 0) ? ((position < 6) ? 'PM' : 'AM') : '&nbsp;';
+			const meridiem_class = (position % 3 > 0) ? ' text-light' : '';
+			const meridiem_text = (position % 6 > 0) ? ((position < 6) ? 'PM' : 'AM') : '&nbsp;';
 			return '<button type="button" class="btn px-1 '
 				+ ((viewHour % 12 == position % 12) ? 'active btn-info' : 'btn-outline-dark border-white')
 				+ ' pos-' + position + '" '
@@ -402,16 +391,16 @@ function updatePicker($input)
 		+ '<div><button type="button" class="btn btn-secondary mx-1 cancel-btn" data-dismiss="popover">Cancel</button><button type="button" class="btn btn-primary mx-1 submit-btn">OK</button></div>'
 		+ '</div>';
 
-	var $content = jQuery('#' + input_id + '-picker-content');
-	var $table = $content.html(html).find('.clock-input-table');
-	var $center_btn = jQuery('#' + input_id + '-picker-center-btn');
+	const $content = jQuery('#' + input_id + '-picker-content');
+	const $table = $content.html(html).find('.clock-input-table');
+	const $center_btn = jQuery('#' + input_id + '-picker-center-btn');
 	$content.find('.timepicker-btns button').on('click', function () {
-		var unit = jQuery(this).blur().data('unit');
+		const unit = jQuery(this).blur().data('unit');
 		$content.find('.clock-input-table .chevron-btn').data('unit', unit);
 		updateView($input.data('view', unit));
 	});
-	var $hour_input = $content.find('.hour-input').on('change', function () {
-		var hour = this.value.replace(/\D+/, '');
+	const $hour_input = $content.find('.hour-input').on('change', function () {
+		let hour = this.value.replace(/\D+/, '');
 		if (hour.length > 0)
 		{
 			hour = parseInt(hour);
@@ -423,11 +412,11 @@ function updatePicker($input)
 		updateView($input);
 	});
 	$hour_input.add($content.find('.minute-input, .second-input').on('change', function () {
-		var number = this.value.replace(/\D+/, '');
+		let number = this.value.replace(/\D+/, '');
 		if (number.length > 0)
 		{
 			number = parseInt(number);
-			var unit = jQuery(this).attr('class').match(/(minute|second)\-input/)[1];
+			const unit = jQuery(this).attr('class').match(/(minute|second)\-input/)[1];
 			if (number > -1 && number < 60 && number in options.unitText[unit])
 			{
 				$input.data('viewtime', $input.data('viewtime').set(unit, number));
@@ -445,9 +434,9 @@ function updatePicker($input)
 		$input.data('viewtime', $input.data('viewtime').hour(($input.data('viewtime').hour() + 12) % 24));
 		updateView($input);
 	}).on('keydown', function (event) {
-		var key = event.key.toUpperCase();
-		var hour = $input.data('viewtime').hour();
-		var offset = 0;
+		const key = event.key.toUpperCase();
+		const hour = $input.data('viewtime').hour();
+		let offset = 0;
 		if (key == 'A' && hour > 12)
 		{
 			offset = -12;
@@ -463,11 +452,11 @@ function updatePicker($input)
 		}
 	});
 	$content.find('.input-toggle-btn').attr('tabindex', -1).on('click', function () {
-		var input = jQuery(this).data('input');
+		const input = jQuery(this).data('input');
 		$content.find('.clock-input').toggleClass('d-none', input != 'clock');
 		$content.find('.keyboard-input').toggleClass('d-none', input != 'keyboard');
 		$content.find('.input-toggle-btn').each(function () {
-			var $this = jQuery(this);
+			const $this = jQuery(this);
 			$this.toggleClass('d-none', $this.data('input') == input);
 		});
 		$input.popover('update');
@@ -480,11 +469,10 @@ function updatePicker($input)
 		$input.val($input.data('viewtime').format($input.data('options').format)).popover('hide').data('view', null).trigger('change');
 	});
 	$table.find('button').on('click', function () {
-		var $this = jQuery(this);
-		var viewTime = $input.data('viewtime');
-		var position = $this.attr('class').match(/\bpos\-(\d+)/)[1];
-		var view = $input.data('view') || 'hour';
-		var start = 0;
+		const $this = jQuery(this);
+		let viewTime = $input.data('viewtime');
+		let position = $this.attr('class').match(/\bpos\-(\d+)/)[1];
+		const view = $input.data('view') || 'hour';
 		switch (view)
 		{
 			case 'hour':
@@ -492,39 +480,35 @@ function updatePicker($input)
 				{
 					viewTime = viewTime.hour(position % 12 + ((viewTime.hour() > 11) ? 12 : 0));
 				}
-				start = 1;
 				break;
 			case 'minute':
 				if (position > 0)
 				{
 					viewTime = viewTime.minute(position % 12 * 5);
 				}
-				start = 2;
 				break;
 			case 'second':
 				if (position > 0)
 				{
 					viewTime = viewTime.second(position % 12 * 5);
 				}
-				start = 3;
 				break;
 			case 'meridiem':
 				if (position > 0)
 				{
 					viewTime = viewTime.hour(viewTime.hour() % 12 + ((position < 6) ? 12 : 0));
 				}
-				start = 4;
 				break;
 		}
 		$input.data('viewtime', viewTime);
-		var picked = true;
+		let picked = true;
 		FORMATS.forEach(function (formats) {
-			var regex = new RegExp(formats[0], 'i');
+			const regex = new RegExp(formats[0], 'i');
 			if (picked && regex.test(options.format))
 			{
 				position = null;
-				var number;
-				var nextUnit = formats[2];
+				let number;
+				const nextUnit = formats[2];
 				switch (nextUnit)
 				{
 					case 'hour':
@@ -558,12 +542,12 @@ function updatePicker($input)
 		}
 	});
 	$content.find('.chevron-btn').attr('tabindex', -1).on('click', function () {
-		var $this = jQuery(this).blur();
-		var options = $input.data('options');
-		var unit = $this.data('unit') || 'hour';
-		var step = $this.data('step');
-		var viewTime = $input.data('viewtime');
-		var number = (unit == 'meridiem')
+		const $this = jQuery(this).blur();
+		const options = $input.data('options');
+		const unit = $this.data('unit') || 'hour';
+		const step = $this.data('step');
+		const viewTime = $input.data('viewtime');
+		const number = (unit == 'meridiem')
 			? ((viewTime.hour() > 11) ? 1 : 0)
 			: viewTime.get(unit);
 		if (!(number in options.unitText[unit]))
@@ -575,13 +559,13 @@ function updatePicker($input)
 			return;
 		}
 
-		var unitLength = UNIT_LENGTHS[unit];
+		const unitLength = UNIT_LENGTHS[unit];
+		let idx = number;
 		switch (unit)
 		{
 			case 'hour':
 			case 'minute':
 			case 'second':
-				var idx = number;
 				do
 				{
 					idx = (idx + step + unitLength) % unitLength;
@@ -595,7 +579,6 @@ function updatePicker($input)
 				while (idx != number);
 				break;
 			case 'meridiem':
-				var idx = number;
 				idx = (idx + step + unitLength) % unitLength;
 				if (options.unitText[unit][idx] !== null)
 				{
@@ -614,7 +597,7 @@ function updatePicker($input)
  */
 jQuery.fn.timepicker = function (options) {
 	// Get boostrap version
-	var bs_version = parseInt(((typeof bootstrap == 'object') ? bootstrap.Dropdown.VERSION : jQuery.fn.dropdown.Constructor.VERSION || '0').replace(/\..+$/, ''));
+	const bs_version = parseInt(((typeof bootstrap == 'object') ? bootstrap.Dropdown.VERSION : jQuery.fn.dropdown.Constructor.VERSION || '0').replace(/\..+$/, ''));
 	if (bs_version < 4)
 	{
 		console.error('Invalid bootstrap version ' + bs_version + ' detected');
@@ -627,8 +610,8 @@ jQuery.fn.timepicker = function (options) {
 		{
 			return undefined;
 		}
-		var input_options = this.data('options') || {};
-		var single_arg = (arguments.length == 1);
+		let input_options = this.data('options') || {};
+		const single_arg = (arguments.length == 1);
 		switch (options)
 		{
 			case 'format':
@@ -654,7 +637,7 @@ jQuery.fn.timepicker = function (options) {
 				}
 				else if (arguments[1])
 				{
-					var newTime = parseTime(arguments[1], input_options);
+					const newTime = parseTime(arguments[1], input_options);
 					if (newTime && newTime.isValid())
 					{
 						input_options[options] = newTime;
@@ -680,7 +663,7 @@ jQuery.fn.timepicker = function (options) {
 				}
 				else if (arguments[1])
 				{
-					var step = parseInt(arguments[1]);
+					const step = parseInt(arguments[1]);
 					if (step > 0 && step < 86400
 						&& step % (hasFormat(input_options.format, 's') ? 1 : 60) == 0)
 					{
@@ -707,7 +690,7 @@ jQuery.fn.timepicker = function (options) {
 				}
 				else
 				{
-					var newTime = (arguments[1]) ? parseTime(arguments[1], input_options) : null;
+					const newTime = (arguments[1]) ? parseTime(arguments[1], input_options) : null;
 					this.val((newTime && newTime.isValid()) ? newTime.format(input_options.format) : '');
 				}
 				break;
@@ -718,7 +701,7 @@ jQuery.fn.timepicker = function (options) {
 				}
 				else
 				{
-					var newTime = (arguments[1]) ? parseTime(arguments[1], input_options) : null;
+					const newTime = (arguments[1]) ? parseTime(arguments[1], input_options) : null;
 					this.data('viewtime', newTime);
 				}
 				break;
@@ -729,7 +712,7 @@ jQuery.fn.timepicker = function (options) {
 				}
 				else
 				{
-					var view = arguments[1];
+					const view = arguments[1];
 					updateView(jQuery(this).data('view', view));
 				}
 				break;
@@ -743,7 +726,7 @@ jQuery.fn.timepicker = function (options) {
 	if (!initialized)
 	{
 		initialized = true;
-		var table_class = '.timepicker-table ';
+		let table_class = '.timepicker-table ';
 		jQuery(document.head).append('<style id="timepicker-style">'
 			+ '.timepicker-popover { font-size: inherit;  }'
 			+ '.timepicker-btns .btn:hover { background-color: #e2e6ea; color: #000; }'
@@ -788,30 +771,30 @@ jQuery.fn.timepicker = function (options) {
 	{
 		options = {};
 	}
-	var common_options = jQuery.extend({}, settings, options);
+	const common_options = jQuery.extend({}, settings, options);
 
 	// Initialize the inputs
 	return this.each(function () {
-		var $input = jQuery(this);
+		const $input = jQuery(this);
 
 		// Process options
-		var input_options = jQuery.extend(true, {}, common_options);
-		var format = $input.data('format') || common_options.format;
+		let input_options = jQuery.extend(true, {}, common_options);
+		let format = $input.data('format') || common_options.format;
 		if (format)
 		{
 			input_options.format = format;
 		}
-		var minTime = $input.attr('min') || $input.data('mintime') || common_options.minTime;
+		let minTime = $input.attr('min') || $input.data('mintime') || common_options.minTime;
 		if (minTime && (minTime = parseTime(minTime)) && minTime.isValid())
 		{
 			input_options.minTime = minTime;
 		}
-		var maxTime = $input.attr('max') || $input.data('maxtime') || common_options.maxTime;
+		let maxTime = $input.attr('max') || $input.data('maxtime') || common_options.maxTime;
 		if (maxTime && (maxTime = parseTime(maxTime)) && maxTime.isValid())
 		{
 			input_options.maxTime = maxTime;
 		}
-		var step = $input.attr('step') || $input.data('step') || common_options.step;
+		const step = $input.attr('step') || $input.data('step') || common_options.step;
 		if (step > 0 && step < 86400 && 60 % step > 0)
 		{
 			input_options.step = parseInt(step);
@@ -825,29 +808,24 @@ jQuery.fn.timepicker = function (options) {
 		}
 		$input.data('timepicker', true);
 
-		var input_id = this.id;
-		var $toggles = [];
+		let input_id = this.id;
+		let $toggles = $input.siblings().find('[data-toggle="timepicker"]:not([data-target])');
 		if (this.id)
 		{
-			$toggles = jQuery('[data-toggle="timepicker"][data-target="#' + this.id + '"]');
+			$toggles = $toggles.add('[data-toggle="timepicker"][data-target="#' + this.id + '"]');
 		}
 		else
 		{
 			input_id = 'input-' + Math.floor(Math.random() * 1000000 + 1);
 			this.id = input_id;
 		}
-		// If no toggles, then find it based on sibilings
-		if ($toggles.length == 0)
-		{
-			$toggles = $input.siblings().find('[data-toggle="timepicker"]:not([data-target])');
-		}
 		$input.addClass('timepicker');
 
-		var $label = jQuery('label[for="' + input_id + '"]');
+		const $label = jQuery('label[for="' + input_id + '"]');
 		$input.on('change', function () {
 			this.value = this.value.replace(/^\s+|\s+$/g, '');
-			var options = $input.data('options');
-			var newTime = parseTime(this.value, options);
+			const options = $input.data('options');
+			const newTime = parseTime(this.value, options);
 			this.value = (newTime !== false) ? newTime.format(options.format) : '';
 		}).on('shown.bs.popover', function () {
 			jQuery('#' + input_id + '-picker-content').find('.hour-input').select();
@@ -881,12 +859,13 @@ jQuery.fn.timepicker = function (options) {
 */
 			},
 			content: function () {
-				var options = $input.data('options');
-				var viewTime = parseTime($input.val(), options);
+				const options = $input.data('options');
+				const viewTime = parseTime($input.val(), options);
 				$input.data('viewtime', viewTime);
 				return '<div id="' + input_id + '-picker-content" class="timepicker-content" data-view="hour"></div>';
 			}
 		});
+
 		$toggles.on('click', function () {
 			$input.popover('toggle');
 			this.blur();
