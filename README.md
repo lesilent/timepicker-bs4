@@ -15,7 +15,7 @@ time picker for Bootstrap 4
 <link href="/path/to/bootstrap.css" rel="stylesheet" />
 <script src="/path/to/jquery.js"></script>
 <script src="/path/to/bootstrap.js"></script>
-<script src="/path/to/regular.js"></script>
+<script src="/path/to/dayjs.js"></script>
 <script src="/path/to/fontawesome.js"></script>
 <script src="/path/to/timepicker-bs4.js"></script>
 ```
