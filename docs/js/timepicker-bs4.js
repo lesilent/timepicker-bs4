@@ -371,12 +371,12 @@ function updatePicker($input)
 		})
 		+ '</div><div class="keyboard-input' + (clock_enabled ? ' d-none' : '') + '"><table class="mx-auto text-center"><tr>'
 		+ '<td style="width:3rem"><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="hour" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>'
-		+ '<td></td>'
+		+ '<td style="width:3px"></td>'
 		+ '<td style="width:3rem"><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="minute" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>'
-		+ (has_second ? '<td></td><td style="width:3rem"><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="second" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>' : '')
+		+ (has_second ? '<td style="width:3px"></td><td style="width:3rem"><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="second" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>' : '')
 		+ (clock_24 ? '' : '<td style="width:3.3rem"><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="meridiem" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>')
 		+ '</tr><tr>'
-		+ '<td><input type="text" class="form-control text-center border-light hour-input" minlength="1" maxlength="2" /></button></td><td>:</td><td><input type="text" class="form-control text-center border-light minute-input" minlength="1" maxlength="2" /></td>'
+		+ '<td><input type="text" class="form-control text-center border-light hour-input" minlength="1" maxlength="2" /></td><td>:</td><td><input type="text" class="form-control text-center border-light minute-input" minlength="1" maxlength="2" /></td>'
 		+ (has_second ? '<td>:</td><td><input type="text" class="form-control text-center border-light second-input" minlength="1" maxlength="2" /></td>' : '')
 		+ (clock_24 ? '' : '<td><button type="button" class="btn meridiem-btn"></button></td>')
 		+ '</tr><tr>'
