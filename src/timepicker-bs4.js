@@ -729,6 +729,7 @@ jQuery.fn.timepicker = function (options) {
 		let table_class = '.timepicker-table ';
 		jQuery(document.head).append('<style id="timepicker-style">'
 			+ '.timepicker-popover { font-size: inherit;  }'
+			+ '.timepicker-popover .btn:hover { background-color: #e2e6ea; }'
 			+ '.timepicker-btns .btn:hover { background-color: #e2e6ea; color: #000; }'
 			+ '.timepicker-content span.hour, .timepicker-content span.minute, .timepicker-content span.second, .timepicker-content span.meridiem { display: none; }'
 			+ '.timepicker-content[data-view="hour"] span.hour,'
@@ -755,6 +756,15 @@ jQuery.fn.timepicker = function (options) {
 			+ table_class + 'td button.pos-10 { margin: 0 0 .3rem .7rem; }'
 			+ table_class + 'td button.pos-11 { margin: .6rem .4rem 0 0; }'
 			+ table_class + 'td button.pos-12 { margin: 0 0 .6rem 0; }'
+			+ '@media (prefers-color-scheme: dark) {'
+			+ '.timepicker-popover { background-color: #000000; border-color: #ffffff; color: #dee2e6; }'
+			+ '.timepicker-popover .popover-header { background-color: #343a40; color: #ffffff; }'
+			+ '.timepicker-popover .popover-header .close { filter: invert(1) grayscale(1) brightness(2); }'
+			+ '.timepicker-popover input.border-light { background-color: #212529; color: #ffffff; }'
+			+ '.timepicker-popover input.border-light:focus { background-color: inherit; border-color: #86b7fe; color: #ffffff; }'
+			+ '.timepicker-popover .meridiem-btn { color: #ffffff; }'
+			+ '.timepicker-popover .meridiem-btn:hover { color: inherit; }'
+			+ '}'
 			+ '</style>');
 
 		// Make popovers close when clicked outside of them
