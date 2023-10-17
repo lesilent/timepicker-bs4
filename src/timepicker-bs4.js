@@ -17,7 +17,8 @@ const settings = {
 	format: 'hh:mm A',
 	maxTime: null,
 	minTime: null,
-	step: 60
+	step: 60,
+	theme: null
 };
 
 /**
@@ -284,6 +285,7 @@ function updatePicker($input)
 	const minTime = options.minTime || dayjs().startOf('day');
 	const maxTime = options.maxTime || dayjs().endOf('day');
 	const step = options.step || 60;
+	const theme = options.theme || ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : '');
 	let validSteps = { hour: {}, minute: {}, second: {}, meridiem: {} };
 	let viewTime = $input.data('viewtime');
 	let iTime = minTime.clone();
@@ -370,11 +372,11 @@ function updatePicker($input)
 				+ '</span></button>';
 		})
 		+ '</div><div class="keyboard-input' + (clock_enabled ? ' d-none' : '') + '"><table class="mx-auto text-center"><tr>'
-		+ '<td style="width:3rem"><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="hour" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>'
-		+ '<td style="width:3px"></td>'
-		+ '<td style="width:3rem"><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="minute" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>'
-		+ (has_second ? '<td style="width:3px"></td><td style="width:3rem"><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="second" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>' : '')
-		+ (clock_24 ? '' : '<td style="width:3.3rem"><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="meridiem" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>')
+		+ '<td><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="hour" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>'
+		+ '<td></td>'
+		+ '<td><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="minute" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>'
+		+ (has_second ? '<td></td><td><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="second" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>' : '')
+		+ (clock_24 ? '' : '<td><a class="btn btn-link px-1 mx-0 chevron-btn" data-unit="meridiem" data-step="1" href="javascript:void(0)"><i class="fas fa-chevron-up fa-lg"></i></a></td>')
 		+ '</tr><tr>'
 		+ '<td><input type="text" class="form-control text-center border-light hour-input" minlength="1" maxlength="2" /></td><td>:</td><td><input type="text" class="form-control text-center border-light minute-input" minlength="1" maxlength="2" /></td>'
 		+ (has_second ? '<td>:</td><td><input type="text" class="form-control text-center border-light second-input" minlength="1" maxlength="2" /></td>' : '')
@@ -394,6 +396,7 @@ function updatePicker($input)
 	const $content = jQuery('#' + input_id + '-picker-content');
 	const $table = $content.html(html).find('.clock-input-table');
 	const $center_btn = jQuery('#' + input_id + '-picker-center-btn');
+	$content.parents('.timepicker-popover').attr('data-theme', theme);
 	$content.find('.timepicker-btns button').on('click', function () {
 		const unit = jQuery(this).blur().data('unit');
 		$content.find('.clock-input-table .chevron-btn').data('unit', unit);
@@ -683,6 +686,21 @@ jQuery.fn.timepicker = function (options) {
 					this.data('options', input_options);
 				}
 				break;
+			case 'theme':
+				if (single_arg)
+				{
+					return input_options.theme;
+				}
+				else if (arguments[1] === null || typeof arguments[1] == 'string')
+				{
+					input_options.theme = arguments[1];
+					this.data('options', input_options);
+				}
+				else
+				{
+					console.warn('Invalid theme');
+				}
+				break;
 			case 'time':
 				if (single_arg)
 				{
@@ -729,7 +747,9 @@ jQuery.fn.timepicker = function (options) {
 		let table_class = '.timepicker-table ';
 		jQuery(document.head).append('<style id="timepicker-style">'
 			+ '.timepicker-popover { font-size: inherit;  }'
-			+ '.timepicker-popover .btn:hover { background-color: #e2e6ea; }'
+			+ '.timepicker-popover .btn-link:hover, .timepicker-popover .meridiem-btn:hover { background-color: #e2e6ea; }'
+			+ '.timepicker-popover .meridiem-btn { min-width: 3.2rem; }'
+			+ '.timepicker-popover input { width: 3rem; }'
 			+ '.timepicker-btns .btn:hover { background-color: #e2e6ea; color: #000; }'
 			+ '.timepicker-content span.hour, .timepicker-content span.minute, .timepicker-content span.second, .timepicker-content span.meridiem { display: none; }'
 			+ '.timepicker-content[data-view="hour"] span.hour,'
@@ -756,15 +776,13 @@ jQuery.fn.timepicker = function (options) {
 			+ table_class + 'td button.pos-10 { margin: 0 0 .3rem .7rem; }'
 			+ table_class + 'td button.pos-11 { margin: .6rem .4rem 0 0; }'
 			+ table_class + 'td button.pos-12 { margin: 0 0 .6rem 0; }'
-			+ '@media (prefers-color-scheme: dark) {'
-			+ '.timepicker-popover { background-color: #000000; border-color: #ffffff; color: #dee2e6; }'
-			+ '.timepicker-popover .popover-header { background-color: #343a40; color: #ffffff; }'
-			+ '.timepicker-popover .popover-header .close { filter: invert(1) grayscale(1) brightness(2); }'
-			+ '.timepicker-popover input.border-light { background-color: #212529; color: #ffffff; }'
-			+ '.timepicker-popover input.border-light:focus { background-color: inherit; border-color: #86b7fe; color: #ffffff; }'
-			+ '.timepicker-popover .meridiem-btn { color: #ffffff; }'
-			+ '.timepicker-popover .meridiem-btn:hover { color: inherit; }'
-			+ '}'
+			+ '.timepicker-popover[data-theme="dark"] { background-color: #000000; border-color: #ffffff; color: #dee2e6; }'
+			+ '.timepicker-popover[data-theme="dark"] .popover-header { background-color: #343a40; color: #ffffff; }'
+			+ '.timepicker-popover[data-theme="dark"] .popover-header .close { filter: invert(1) grayscale(1) brightness(2); }'
+			+ '.timepicker-popover[data-theme="dark"] input.border-light { background-color: #212529; color: #ffffff; }'
+			+ '.timepicker-popover[data-theme="dark"] input.border-light:focus { background-color: inherit; border-color: #86b7fe; color: #ffffff; }'
+			+ '.timepicker-popover[data-theme="dark"] .meridiem-btn { color: #ffffff; }'
+			+ '.timepicker-popover[data-theme="dark"] .meridiem-btn:hover { color: inherit; }'
 			+ '</style>');
 
 		// Make popovers close when clicked outside of them
@@ -808,6 +826,11 @@ jQuery.fn.timepicker = function (options) {
 		if (step > 0 && step < 86400 && 60 % step > 0)
 		{
 			input_options.step = parseInt(step);
+		}
+		const theme = $input.data('theme') || common_options.theme;
+		if (theme)
+		{
+			input_options.theme = theme;
 		}
 		input_options.unitText = getUnitText(input_options);
 		$input.data('options', input_options);
