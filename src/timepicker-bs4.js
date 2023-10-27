@@ -72,30 +72,34 @@ let initialized = false;
  */
 function parseTime(str, options)
 {
-	let input_time, matches;
-	if (typeof str == 'object' && str instanceof dayjs)
+	let input_time = false, matches;
+	if (typeof str == 'string')
 	{
-		return str.isValid() ? str : false;
-	}
-	str = str.replace(/^\s+|\s+$/g, '');
-	if ((matches = str.match(/^([0-2]?\d)(?:s*:\s*([0-5]\d))?(?:\s*:\s*([0-5]\d))?(?:\s*([AP])\.?(?:M\.?)?)?$/i))
-		&& parseInt(matches[1]) > (matches[4] ? 0 : -1) && parseInt(matches[1]) < (matches[4] ? 13 : 24)
-		&& (matches[2] === undefined || (parseInt(matches[2]) > -1 && parseInt(matches[2]) < 60))
-		&& (matches[3] === undefined || (parseInt(matches[3]) > -1 && parseInt(matches[3]) < 60)))
-	{
-		let hour = parseInt(matches[1]);
-		if (matches[4])
+		str = str.replace(/^\s+|\s+$/g, '');
+		if ((matches = str.match(/^([0-2]?\d)(?:s*:\s*([0-5]\d))?(?:\s*:\s*([0-5]\d))?(?:\s*([AP])\.?(?:M\.?)?)?$/i))
+			&& parseInt(matches[1]) > (matches[4] ? 0 : -1) && parseInt(matches[1]) < (matches[4] ? 13 : 24)
+			&& (matches[2] === undefined || (parseInt(matches[2]) > -1 && parseInt(matches[2]) < 60))
+			&& (matches[3] === undefined || (parseInt(matches[3]) > -1 && parseInt(matches[3]) < 60)))
 		{
-			hour = hour % 12 + ((matches[4].toUpperCase() == 'P') ? 12 : 0);
+			let hour = parseInt(matches[1]);
+			if (matches[4])
+			{
+				hour = hour % 12 + ((matches[4].toUpperCase() == 'P') ? 12 : 0);
+			}
+			input_time = dayjs().hour(hour).minute(matches[2] == undefined ? 0 : parseInt(matches[2])).second((matches[3] === undefined) ? 0 : parseInt(matches[3]));
 		}
-		return dayjs().hour(hour).minute(matches[2] == undefined ? 0 : parseInt(matches[2])).second((matches[3] === undefined) ? 0 : parseInt(matches[3]));
+		else
+		{
+			input_time = (options && options.format)
+				? dayjs(str, options.format)
+				: dayjs(str);
+		}
 	}
-	else if (options && options.format && typeof dayjs == 'function')
+	else
 	{
-		input_time = dayjs(str, options.format);
-		return input_time.isValid() ? input_time : false;
+		input_time = dayjs(str);
 	}
-	return false;
+	return (input_time && input_time.isValid()) ? input_time : false;
 }
 
 /**
@@ -163,7 +167,7 @@ function getUnitText(options)
  */
 function hasFormat(format, searchElement)
 {
-	return (format.replace(/\[[^\]]*\]/g).indexOf(searchElement) > -1);
+	return (format.replace(/\[[^\]]*\]/g).indexOf(searchElement) >= 0);
 }
 
 /**
@@ -639,7 +643,7 @@ jQuery.fn.timepicker = function (options) {
 				}
 				else if (arguments[1])
 				{
-					const newTime = parseTime(arguments[1], input_options);
+					const newTime = parseTime(arguments[1]);
 					if (newTime && newTime.isValid())
 					{
 						input_options[options] = newTime;
@@ -703,7 +707,7 @@ jQuery.fn.timepicker = function (options) {
 			case 'time':
 				if (single_arg)
 				{
-					return parseTime(this.val()) || null;
+					return parseTime(this.val(), input_options) || null;
 				}
 				else
 				{

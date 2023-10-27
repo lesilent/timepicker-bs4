@@ -8,7 +8,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" integrity="sha512-rt/SrQ4UNIaGfDyEXZtNcyWvQeOq0QLygHluFQcSjaGB04IxWhal71tKuzP6K8eYXYB6vJV4pHkXcmFGGQ1/0w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.bundle.min.js" integrity="sha512-igl8WEUuas9k5dtnhKqyyld6TzzRjvMqLC79jkgT3z02FvJyHAuUtyemm/P/jYSne1xwFI06ezQxEwweaiV7VA==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.4/dayjs.min.js" integrity="sha512-Ot7ArUEhJDU0cwoBNNnWe487kjL5wAOsIYig8llY/l0P2TUFwgsAHVmrZMHsT8NGo+HwkjTJsNErS6QqIkBxDw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.10/dayjs.min.js" integrity="sha512-FwNWaxyfy2XlEINoSnZh1JQ5TRRtGow0D6XcmAWmYCRgvqOUTnzCxPc9uF35u5ZEpirk1uhlPVA19tflhvnW1g==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.10/plugin/customParseFormat.min.js" integrity="sha512-FM59hRKwY7JfAluyciYEi3QahhG/wPBo6Yjv6SaPsh061nFDVSukJlpN+4Ow5zgNyuDKkP3deru35PHOEncwsw==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js" integrity="sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w==" crossorigin="anonymous" referrerpolicy="no-referrer" defer="defer"></script>
 <script src="js/timepicker-bs4.js?" defer="defer"></script>
 <style>
@@ -50,6 +51,7 @@
 		<div id="format-dropdown-menu" class="dropdown-menu dropdown-menu-right">
 			<button type="button" class="dropdown-item">hh:mm A</button>
 			<button type="button" class="dropdown-item">HH:mm</button>
+			<button type="button" class="dropdown-item">HH:mm:ss</button>
 		</div><!-- /.dropdown-menu -->
 		</div><!-- /.input-group-append -->
 		</div><!-- /.input-group -->
@@ -71,7 +73,7 @@
 	<div class="form-group col-6 col-sm-4 col-md-3">
 		<label for="step">Step (seconds):</label>
 		<div class="input-group">
-		<input type="number" id="step" class="form-control options-control" name="step" min="60" max="86399" pattern="(\d{1,5})?" maxlength="5" />
+		<input type="number" id="step" class="form-control options-control" name="step" min="60" max="86399" pattern="(\d{1,5})?" maxlength="5" data-prev="60" />
 		<div class="input-group-append"><button type="button" id="step-reset-btn" class="btn btn-outline-secondary reset-btn" disabled="disabled" title="Reset Option"><i class="far fa-times-circle"></i></button></div>
 		</div><!-- /.input-group -->
 	</div><!-- /.form-group -->
@@ -115,7 +117,7 @@
 	</form>
 </div><!-- /.list-group-item -->
 <div class="list-group-item bg-light font-weight-bolder">HTML</div>
-<div class="list-group-item"><pre class="mb-0"><code id="timepicker-html"><span class="timepicker-input-group d-none">&lt;div class=&quot;input-group&quot;&gt;</span>
+<div class="list-group-item"><pre class="mb-0" tabindex="-1"><code id="timepicker-html"><span class="timepicker-input-group d-none">&lt;div class=&quot;input-group&quot;&gt;</span>
 <span id="timepicker-indent" class="d-none">  </span>&lt;input type=&quot;text&quot;<span id="timepicker-id"></span><span id="timepicker-name"></span> class=&quot;form-control timepicker-bs4&quot;<span id="timepicker-attribs"></span> /&gt;
     <span class="timepicker-input-group d-none">&lt;div class=&quot;input-group-append&quot;&gt;
       &lt;button type=&quot;button&quot; class=&quot;btn btn-outline-secondary&quot; data-toggle=&quot;timepicker&quot;<span id="timepicker-target"></span>&gt;&lt;i class=&quot;far fa-clock&quot;&gt;&lt;/i&gt;&lt;/button&gt;
@@ -127,14 +129,24 @@
 </div><!-- /.container -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-	jQuery('#minTime, #maxTime').timepicker();
+	// Load Day.js plugins
+	['custom'].forEach(function (format) {
+		const plugin = 'dayjs_plugin_customFormat';
+		if (plugin in window)
+		{
+			dayjs.extend(window[plugin]);
+		}
+	});
 
+	jQuery('#minTime, #maxTime').timepicker();
 	const $picker = jQuery('#timepicker-input').timepicker();
+	const $step = jQuery('#step');
 	const defaultFormat = $picker.timepicker('format');
 	const defaultTheme = $picker.timepicker('theme') || '';
 	const minStep = parseInt(document.getElementById('step').min);
 	const maxStep = parseInt(document.getElementById('step').max);
 	const timeRegex = new RegExp('^' + document.getElementById('minTime').pattern.replace(/\?$/, '') + '$');
+	let has_second = false;
 	jQuery('.options-control').on('change', function () {
 		if (this.type == 'text')
 		{
@@ -158,6 +170,16 @@ document.addEventListener('DOMContentLoaded', function () {
 				break;
 			case 'format':
 				$picker.val('').timepicker('time', null);
+				has_second = (document.getElementById('format').value.replace(/\[[^\]]*\]/g).indexOf('s') >= 0);
+				if (!has_second)
+				{
+					let step = parseInt($step.val());
+					if (step % 60 > 0)
+					{
+						step = Math.round(step / 60) * 60;
+						$step.data('prev', step).val(step.toString());
+					}
+				}
 				break;
 			case 'maxTime':
 			case 'minTime':
@@ -172,14 +194,17 @@ document.addEventListener('DOMContentLoaded', function () {
 				this_value = this_value.replace(/\D+/g, '');
 				if (this_value.length > 0)
 				{
+					const prev_value = $step.data('prev');
 					this_value = parseInt(this_value);
-					if (this_value < 0 || this_value < minStep || this_value > maxStep)
+					if (!has_second && this_value != prev_value)
 					{
-						this_value = '';
+						this_value = ((this_value > prev_value) ? Math.ceil(this_value / 60) : Math.floor(this_value / 60)) * 60;
 					}
+					this_value = (this_value < 0 || this_value < minStep || this_value > maxStep) ? '' : this_value.toString();
 				}
 				document.getElementById('step-reset-btn').disabled = !(this_value.length > 0);
 				this.value = this_value;
+				$step.data('prev', this_value);
 				break;
 			case 'theme':
 				document.getElementById('theme-reset-btn').disabled = !(this_value.length > 0);
