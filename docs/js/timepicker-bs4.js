@@ -13,7 +13,7 @@
  * @type {object}
  * @todo add support for additional options
  */
-const settings = {
+const defaults = {
 	format: 'hh:mm A',
 	maxTime: null,
 	minTime: null,
@@ -803,7 +803,13 @@ jQuery.fn.timepicker = function (options) {
 	{
 		options = {};
 	}
-	const common_options = jQuery.extend({}, settings, options);
+	const common_options = jQuery.extend({}, defaults, options);
+	['minTime', 'maxTime'].forEach(function (option) {
+		if (common_options[option])
+		{
+			common_options[option] = parseTime(common_options[option]);
+		}
+	});
 
 	// Initialize the inputs
 	return this.each(function () {
