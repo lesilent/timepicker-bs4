@@ -8,20 +8,6 @@
 'use strict';
 
 /**
- * Default options for the current modal being displayed
- *
- * @type {object}
- * @todo add support for additional options
- */
-const defaults = {
-	format: 'hh:mm A',
-	maxTime: null,
-	minTime: null,
-	step: 60,
-	theme: 'light'
-};
-
-/**
  * Array of dayjs format substrings,
  *
  * 0 = used for regex to determine whether format contains unit
@@ -803,7 +789,7 @@ jQuery.fn.timepicker = function (options) {
 	{
 		options = {};
 	}
-	const common_options = jQuery.extend({}, defaults, options);
+	const common_options = jQuery.extend({}, jQuery.fn.timepicker.defaults, options);
 	['minTime', 'maxTime'].forEach(function (option) {
 		if (common_options[option])
 		{
@@ -919,6 +905,23 @@ jQuery.fn.timepicker = function (options) {
 	});
 };
 
+/**
+ * Default options
+ *
+ * @type {object}
+ * @todo add support for additional options
+ */
+jQuery.fn.timepicker.defaults = {
+	format: 'hh:mm A',
+	maxTime: null,
+	minTime: null,
+	step: 60,
+	theme: 'light'
+};
+
+/*
+ * Initialize timepickers
+ */
 document.addEventListener('DOMContentLoaded', function() {
 	jQuery('[data-toggle="timepicker"][data-target]').each(function () {
 		jQuery(jQuery(this).data('target')).timepicker();

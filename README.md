@@ -49,6 +49,13 @@ jQuery('#meet_time').timepicker();
 | `step` | `60` | Increments in seconds of allowed times. |
 | `theme` | `light` | The visual theme to apply to the picker. Valid values include "light", "dark", or "auto". When "auto", the theme is dependent on the browser's configured mode/theme. |
 
+### Defaults
+
+The default plugin options can be overridden so that they're applied to all pickers.
+
+```javascript
+jQuery.fn.datepicker.theme = 'auto';
+```
 
 ## Demo
 
