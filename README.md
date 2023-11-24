@@ -54,7 +54,7 @@ jQuery('#meet_time').timepicker();
 The default plugin options can be overridden so that they're applied to all pickers.
 
 ```javascript
-jQuery.fn.datepicker.theme = 'auto';
+jQuery.fn.timepicker.theme = 'auto';
 ```
 
 ## Demo
