@@ -47,14 +47,14 @@ jQuery('#meet_time').timepicker();
 | `maxTime` | `null` | The maximum allowed time in HH:mm format. This can also be specified using a "max" attribute on the input tag. |
 | `minDate` | `null` | The minimum allowed date in HH:mm format. This can also be specified using a "min" attribute on the input tag. |
 | `step` | `60` | Increments in seconds of allowed times. |
-| `theme` | `light` | The visual theme to apply to the picker. Valid values include "light", "dark", or "auto". When "auto", the theme is dependent on the browser's configured mode/theme. |
+| `scheme` | `light` | The visual scheme to apply to the picker. Valid values include "light", "dark", or "auto". When "auto", the scheme is dependent on the browser's configured mode/scheme. |
 
 ### Defaults
 
 The default plugin options can be overridden so that they're applied to all pickers.
 
 ```javascript
-jQuery.fn.timepicker.theme = 'auto';
+jQuery.fn.timepicker.scheme = 'auto';
 ```
 
 ## Demo
