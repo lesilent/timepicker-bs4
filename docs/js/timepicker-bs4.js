@@ -385,7 +385,7 @@ function updatePicker($input)
 	const $content = jQuery('#' + input_id + '-picker-content');
 	const $table = $content.html(html).find('.clock-input-table');
 	const $center_btn = jQuery('#' + input_id + '-picker-center-btn');
-	$content.parents('.timepicker-popover').attr('data-theme', (options.theme == 'auto') ? ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : '') : options.theme);
+	$content.parents('.timepicker-popover').attr('data-scheme', (options.scheme == 'auto') ? ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : '') : options.scheme);
 	$content.find('.timepicker-btns button').on('click', function () {
 		const unit = jQuery(this).blur().data('unit');
 		$content.find('.clock-input-table .chevron-btn').data('unit', unit);
@@ -675,19 +675,19 @@ jQuery.fn.timepicker = function (options) {
 					this.data('options', input_options);
 				}
 				break;
-			case 'theme':
+			case 'scheme':
 				if (single_arg)
 				{
-					return input_options.theme;
+					return input_options.scheme;
 				}
 				else if (arguments[1] === null || typeof arguments[1] == 'string')
 				{
-					input_options.theme = arguments[1];
+					input_options.scheme = arguments[1];
 					this.data('options', input_options);
 				}
 				else
 				{
-					console.warn('Invalid theme');
+					console.warn('Invalid scheme');
 				}
 				break;
 			case 'time':
@@ -766,13 +766,13 @@ jQuery.fn.timepicker = function (options) {
 			+ table_class + 'td button.pos-10 { margin: 0 0 .3rem .7rem; }'
 			+ table_class + 'td button.pos-11 { margin: .6rem .4rem 0 0; }'
 			+ table_class + 'td button.pos-12 { margin: 0 0 .6rem 0; }'
-			+ '.timepicker-popover[data-theme="dark"] { background-color: #000000; border-color: #ffffff; color: #dee2e6; }'
-			+ '.timepicker-popover[data-theme="dark"] .popover-header { background-color: #343a40; color: #ffffff; }'
-			+ '.timepicker-popover[data-theme="dark"] .popover-header .close { filter: invert(1) grayscale(1) brightness(2); }'
-			+ '.timepicker-popover[data-theme="dark"] .border-light { background-color: #000000; border-color: #6c757d !important; color: #ffffff; }'
-			+ '.timepicker-popover[data-theme="dark"] input.border-light:focus { background-color: inherit; border-color: #86b7fe !important; color: #ffffff; }'
-			+ '.timepicker-popover[data-theme="dark"] .meridiem-btn { color: #ffffff; }'
-			+ '.timepicker-popover[data-theme="dark"] .meridiem-btn:hover { border-color: #86b7fe !important; }'
+			+ '.timepicker-popover[data-scheme="dark"] { background-color: #000000; border-color: #ffffff; color: #dee2e6; }'
+			+ '.timepicker-popover[data-scheme="dark"] .popover-header { background-color: #343a40; color: #ffffff; }'
+			+ '.timepicker-popover[data-scheme="dark"] .popover-header .close { filter: invert(1) grayscale(1) brightness(2); }'
+			+ '.timepicker-popover[data-scheme="dark"] .border-light { background-color: #000000; border-color: #6c757d !important; color: #ffffff; }'
+			+ '.timepicker-popover[data-scheme="dark"] input.border-light:focus { background-color: inherit; border-color: #86b7fe !important; color: #ffffff; }'
+			+ '.timepicker-popover[data-scheme="dark"] .meridiem-btn { color: #ffffff; }'
+			+ '.timepicker-popover[data-scheme="dark"] .meridiem-btn:hover { border-color: #86b7fe !important; }'
 			+ '</style>');
 
 		// Make popovers close when clicked outside of them
@@ -823,10 +823,10 @@ jQuery.fn.timepicker = function (options) {
 		{
 			input_options.step = parseInt(step);
 		}
-		const theme = $input.data('theme') || common_options.theme;
-		if (theme)
+		const scheme = $input.data('scheme') || common_options.scheme;
+		if (scheme)
 		{
-			input_options.theme = theme;
+			input_options.scheme = scheme;
 		}
 		input_options.unitText = getUnitText(input_options);
 		$input.data('options', input_options);
@@ -916,7 +916,7 @@ jQuery.fn.timepicker.defaults = {
 	maxTime: null,
 	minTime: null,
 	step: 60,
-	theme: 'light'
+	scheme: 'light'
 };
 
 /*

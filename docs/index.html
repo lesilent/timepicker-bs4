@@ -78,14 +78,14 @@
 		</div><!-- /.input-group -->
 	</div><!-- /.form-group -->
 	<div class="form-group col-6 col-sm-4 col-md-3">
-		<label for="theme">Theme:</label>
+		<label for="scheme">Scheme:</label>
 		<div class="input-group">
-		<select id="theme" class="form-control options-control" name="theme">
+		<select id="scheme" class="form-control options-control" name="scheme">
 		<option value="">light</option>
 		<option value="dark">dark</option>
 		<option value="auto">auto</option>
 		</select>
-		<div class="input-group-append"><button type="button" id="theme-reset-btn" class="btn btn-outline-secondary reset-btn" disabled="disabled" title="Reset Theme"><i class="far fa-times-circle"></i></button></div>
+		<div class="input-group-append"><button type="button" id="scheme-reset-btn" class="btn btn-outline-secondary reset-btn" disabled="disabled" title="Reset Scheme"><i class="far fa-times-circle"></i></button></div>
 		</div><!-- /.input-group -->
 	</div><!-- /.form-group -->
 	<div class="form-group col-6 col-sm-4 col-md-3">
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	const $picker = jQuery('#timepicker-input').timepicker();
 	const $step = jQuery('#step');
 	const defaultFormat = $picker.timepicker('format');
-	const defaultTheme = $picker.timepicker('theme') || '';
+	const defaultScheme = $picker.timepicker('scheme') || '';
 	const minStep = parseInt(document.getElementById('step').min);
 	const maxStep = parseInt(document.getElementById('step').max);
 	const timeRegex = new RegExp('^' + document.getElementById('minTime').pattern.replace(/\?$/, '') + '$');
@@ -206,19 +206,19 @@ document.addEventListener('DOMContentLoaded', function () {
 				this.value = this_value;
 				$step.data('prev', this_value);
 				break;
-			case 'theme':
-				document.getElementById('theme-reset-btn').disabled = !(this_value.length > 0);
+			case 'scheme':
+				document.getElementById('scheme-reset-btn').disabled = !(this_value.length > 0);
 				break;
 		}
 		let attribs = '', options = {};
-		jQuery.each({ format: 'format', minTime: 'min', maxTime: 'max', step: 'step', theme: 'theme' }, function (option, attr) {
+		jQuery.each({ format: 'format', minTime: 'min', maxTime: 'max', step: 'step', scheme: 'scheme' }, function (option, attr) {
 			const input = document.getElementById(option);
 			const value = input.value;
 			jQuery('.timepicker-input').timepicker(option, value);
-			if (value.length > 0 && !(option == 'format' && value == defaultFormat) && !(option == 'theme' && value == defaultTheme))
+			if (value.length > 0 && !(option == 'format' && value == defaultFormat) && !(option == 'scheme' && value == defaultScheme))
 			{
 				options[option] = value;
-				attribs += ' ' + ((attr == 'format' || attr == 'theme') ? 'data-' : '') + attr + '="' + value + '"';
+				attribs += ' ' + ((attr == 'format' || attr == 'scheme') ? 'data-' : '') + attr + '="' + value + '"';
 			}
 		});
 		const paramtype = document.getElementById('paramtype').value;
