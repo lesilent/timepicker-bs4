@@ -215,7 +215,7 @@ function updateView($input)
 			return false;
 	}
 	const text = viewTime.format(format);
-	$content.find('.timepicker-btns button').toggleClass('font-weight-bold', false).filter('[data-unit="' + view + '"]').toggleClass('font-weight-bold', true).text(text);
+	$content.find('.timepicker-btns button').removeClass('font-weight-bold').filter('[data-unit="' + view + '"]').addClass('font-weight-bold').text(text);
 	$content.find('.clock-input-table .chevron-btn').data('unit', view);
 
 	FORMATS[0][1] = clock_24 ? 'H' : 'h';
@@ -801,6 +801,19 @@ jQuery.fn.timepicker = function (options) {
 	return this.each(function () {
 		const $input = jQuery(this);
 
+		// Get input id
+		let input_id = this.id;
+		let $toggles = $input.siblings().find('[data-toggle="timepicker"]:not([data-target])');
+		if (this.id)
+		{
+			$toggles = $toggles.add('[data-toggle="timepicker"][data-target="#' + this.id + '"]');
+		}
+		else
+		{
+			input_id = 'input-' + Math.floor(Math.random() * 1000000 + 1);
+			this.id = input_id;
+		}
+
 		// Process options
 		let input_options = jQuery.extend(true, {}, common_options);
 		let format = $input.data('format') || common_options.format;
@@ -835,22 +848,16 @@ jQuery.fn.timepicker = function (options) {
 			// If timepicker is already initialized, then return
 			return this;
 		}
-		$input.data('timepicker', true);
+		$input.data('timepicker', true).addClass('timepicker');
 
-		let input_id = this.id;
-		let $toggles = $input.siblings().find('[data-toggle="timepicker"]:not([data-target])');
-		if (this.id)
+		// Set inputmode
+		if (this.type == 'text' && !this.inputMode)
 		{
-			$toggles = $toggles.add('[data-toggle="timepicker"][data-target="#' + this.id + '"]');
+			this.inputMode = 'tel';
 		}
-		else
-		{
-			input_id = 'input-' + Math.floor(Math.random() * 1000000 + 1);
-			this.id = input_id;
-		}
-		$input.addClass('timepicker');
 
 		const $label = jQuery('label[for="' + input_id + '"]');
+		const placement = (window.screen.width > 575) ? 'bottom' : 'top';
 		$input.on('change', function () {
 			this.value = this.value.replace(/^\s+|\s+$/g, '');
 			const options = $input.data('options');
@@ -870,10 +877,10 @@ jQuery.fn.timepicker = function (options) {
 			$input.data('view', null);
 		}).popover({
 			html: true,
-			placement: 'bottom',
+			placement: placement,
 			sanitize: false,
 			title: '<button class="close mt-n1" data-dismiss="popover">&times;</button>' + (($label.length > 0) ? $label.html() : 'Time'),
-			template: '<div id="' + input_id + '-picker-popover" class="popover timepicker-popover bs-popover-bottom" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div id="' + input_id + '-popover-body" class="popover-body border-bottom"></div><div class="popover-footer bg-light text-right px-3 py-2 rounded-lg" hidden="hidden"><button type="button" class="btn btn-secondary btn-sm" title="Close the picker" data-dismiss="popover"><i class="fas fa-times"></i> Close</button></div></div>',
+			template: '<div id="' + input_id + '-picker-popover" class="popover timepicker-popover bs-popover-"' + placement + '" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div id="' + input_id + '-popover-body" class="popover-body border-bottom"></div><div class="popover-footer bg-light text-right px-3 py-2 rounded-lg" hidden="hidden"><button type="button" class="btn btn-secondary btn-sm" title="Close the picker" data-dismiss="popover"><i class="fas fa-times"></i> Close</button></div></div>',
 			trigger: (($toggles.length > 0) ? 'manual' : 'click'),
 			popperConfig: {
 /*
