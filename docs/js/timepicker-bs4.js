@@ -621,6 +621,7 @@ jQuery.fn.timepicker = function (options) {
 					console.warn('Invalid format');
 				}
 				break;
+			case 'defaultTime':
 			case 'minTime':
 			case 'maxTime':
 				if (single_arg)
@@ -629,12 +630,28 @@ jQuery.fn.timepicker = function (options) {
 				}
 				else if (arguments[1])
 				{
-					const newTime = parseTime(arguments[1]);
+					let newTime = parseTime(arguments[1]);
 					if (newTime && newTime.isValid())
 					{
-						input_options[options] = newTime;
-						input_options.unitText = getUnitText(input_options);
-						this.data('options', input_options);
+						if (options == 'defaultTime')
+						{
+							if (input_options.minTime && newTime.isBefore(input_options.minTime))
+							{
+								newTime = false;
+								console.warn('defaultTime is before minTime');
+							}
+							else if (input_options.maxTime && newTime.isAfter(input_options.maxTime))
+							{
+								newTime = false;
+								console.warn('defaultTime is after maxTime');
+							}
+						}
+						if (newTime)
+						{
+							input_options[options] = newTime;
+							input_options.unitText = getUnitText(input_options);
+							this.data('options', input_options);
+						}
 					}
 					else
 					{
@@ -831,6 +848,13 @@ jQuery.fn.timepicker = function (options) {
 		{
 			input_options.maxTime = maxTime;
 		}
+		let defaultTime = $input.data('default') || common_options.defaultTime;
+		if (defaultTime && (defaultTime = parseTime(defaultTime)) && defaultTime.isValid()
+			&& !(input_options.minTime && defaultTime.isBefore(input_options.minTime))
+			&& !(input_options.maxTime && defaultTime.isAfter(input_options.maxTime)))
+		{
+			input_options.defaultTime = defaultTime;
+		}
 		const step = $input.attr('step') || $input.data('step') || common_options.step;
 		if (step > 0 && step < 86400 && 60 % step > 0)
 		{
@@ -899,7 +923,7 @@ jQuery.fn.timepicker = function (options) {
 			},
 			content: function () {
 				const options = $input.data('options');
-				const viewTime = parseTime($input.val(), options);
+				const viewTime = parseTime($input.val() || options.defaultTime || '', options);
 				$input.data('viewtime', viewTime);
 				return '<div id="' + input_id + '-picker-content" class="timepicker-content" data-view="hour"></div>';
 			}
@@ -919,6 +943,7 @@ jQuery.fn.timepicker = function (options) {
  * @todo add support for additional options
  */
 jQuery.fn.timepicker.defaults = {
+	defaultTime: null,
 	format: 'hh:mm A',
 	maxTime: null,
 	minTime: null,

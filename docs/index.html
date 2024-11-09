@@ -57,6 +57,13 @@
 		</div><!-- /.input-group -->
 	</div><!-- /.form-group -->
 	<div class="form-group col-6 col-sm-4 col-md-3">
+		<label for="defaultTime">Default Time:</label>
+		<div class="input-group">
+		<input type="text" id="defaultTime" class="form-control options-control" name="defaultTime" placeholder="HH:mm" pattern="(([01][0-9]|2[0-3]):[0-5][0-9])?" maxlength="5" data-format="HH:mm" data-default="09:00" />
+		<div class="input-group-append"><button type="button" id="defaultTime-reset-btn" class="btn btn-outline-secondary reset-btn" disabled="disabled" title="Reset Option"><i class="far fa-times-circle"></i></button></div>
+		</div><!-- /.input-group -->
+	</div><!-- /.form-group -->
+	<div class="form-group col-6 col-sm-4 col-md-3">
 		<label for="minTime">Min Time:</label>
 		<div class="input-group">
 		<input type="text" id="minTime" class="form-control options-control" name="minTime" placeholder="HH:mm" pattern="(([01][0-9]|2[0-3]):[0-5][0-9])?" maxlength="5" data-format="HH:mm" />
@@ -138,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	});
 
-	jQuery('#minTime, #maxTime').timepicker();
+	jQuery('#defaultTime, #minTime, #maxTime').timepicker();
 	const $picker = jQuery('#timepicker-input').timepicker();
 	const $step = jQuery('#step');
 	const defaultFormat = $picker.timepicker('format');
@@ -181,6 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
 					}
 				}
 				break;
+			case 'defaultTime':
 			case 'maxTime':
 			case 'minTime':
 				if (!timeRegex.test(this_value))
@@ -211,14 +219,14 @@ document.addEventListener('DOMContentLoaded', function () {
 				break;
 		}
 		let attribs = '', options = {};
-		jQuery.each({ format: 'format', minTime: 'min', maxTime: 'max', step: 'step', scheme: 'scheme' }, function (option, attr) {
+		jQuery.each({ format: 'format', defaultTime: 'default', minTime: 'min', maxTime: 'max', step: 'step', scheme: 'scheme' }, function (option, attr) {
 			const input = document.getElementById(option);
 			const value = input.value;
 			jQuery('.timepicker-input').timepicker(option, value);
 			if (value.length > 0 && !(option == 'format' && value == defaultFormat) && !(option == 'scheme' && value == defaultScheme))
 			{
 				options[option] = value;
-				attribs += ' ' + ((attr == 'format' || attr == 'scheme') ? 'data-' : '') + attr + '="' + value + '"';
+				attribs += ' ' + ((attr == 'format' || attr == 'default' || attr == 'scheme') ? 'data-' : '') + attr + '="' + value + '"';
 			}
 		});
 		const paramtype = document.getElementById('paramtype').value;
