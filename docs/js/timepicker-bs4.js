@@ -391,6 +391,15 @@ function updatePicker($input)
 		$content.find('.clock-input-table .chevron-btn').data('unit', unit);
 		updateView($input.data('view', unit));
 	});
+	const $submit_btn = $content.find('.submit-btn').on('click', function () {
+		$input.val($input.data('viewtime').format($input.data('options').format)).popover('hide').data('view', null).trigger('change');
+	});
+	const chevrons = {};
+	['hour', 'minute', 'second', 'meridiem'].forEach(function (unit) {
+		for (const [direction, step] of Object.entries({ Down: '-1', Up: '1' })) {
+			chevrons[unit + direction] = $content.find('.chevron-btn[data-unit="' + unit + '"][data-step="' + step + '"]');
+		}
+	});
 	const $hour_input = $content.find('.hour-input').on('change', function () {
 		let hour = this.value.replace(/\D+/, '');
 		if (hour.length > 0)
@@ -415,10 +424,16 @@ function updatePicker($input)
 			}
 		}
 		updateView($input);
-	})).on('keyup', function (event) {
+	})).on('keydown', function (event) {
+		const matches = event.key.match(/^Arrow(Down|Up)$/);
+		if (matches)
+		{
+			chevrons[this.className.match(/\b(\w+)\-input\b/)[1] + matches[1]].triggerHandler('click');
+		}
+	}).on('keyup', function (event) {
 		if (event.key == 'Enter')
 		{
-			$content.find('.submit-btn').triggerHandler('click');
+			$submit_btn.triggerHandler('click');
 		}
 	});
 
@@ -426,20 +441,26 @@ function updatePicker($input)
 		$input.data('viewtime', $input.data('viewtime').hour(($input.data('viewtime').hour() + 12) % 24));
 		updateView($input);
 	}).on('keydown', function (event) {
+		const matches = event.key.match(/^Arrow(Down|Up)$/);
+		if (matches)
+		{
+			chevrons['meridiem' + matches[1]].triggerHandler('click');
+		}
+	}).on('keyup', function (event) {
 		const key = event.key.toUpperCase();
-		const hour = $input.data('viewtime').hour();
-		let offset = 0;
-		if (key == 'A' && hour > 12)
+		let hour = $hour_input.val();
+		hour = (hour.length > 0) ? parseInt(hour) : NaN;
+		if ((key == 'A' || key == 'P') && hour !== NaN)
 		{
-			offset = -12;
-		}
-		else if (key == 'P' && hour < 11)
-		{
-			offset = 12;
-		}
-		if (offset != 0)
-		{
-			$input.data('viewtime', $input.data('viewtime').hour(hour + offset));
+			if (key == 'A' && hour > 11)
+			{
+				hour -= 12;
+			}
+			else if (key == 'P' && hour < 12)
+			{
+				hour += 12;
+			}
+			$input.data('viewtime', $input.data('viewtime').hour(hour));
 			updateView($input);
 		}
 	});
@@ -456,9 +477,6 @@ function updatePicker($input)
 	});
 	$content.find('.cancel-btn').on('click', function () {
 		$input.popover('hide');
-	});
-	$content.find('.submit-btn').on('click', function () {
-		$input.val($input.data('viewtime').format($input.data('options').format)).popover('hide').data('view', null).trigger('change');
 	});
 	$table.find('button').on('click', function () {
 		const $this = jQuery(this);

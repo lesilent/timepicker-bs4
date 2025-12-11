@@ -415,7 +415,12 @@ function updatePicker($input)
 			}
 		}
 		updateView($input);
-	})).on('keyup', function (event) {
+	})).on('keydown', function (event) {
+		if (event.key == 'ArrowDown' || event.key == 'ArrowUp')
+		{
+			$content.find('.chevron-btn[data-unit="' + this.className.match(/\b(\w+)\-input\b/)[1] + '"][data-step="' + ((event.key == 'ArrowDown') ? '-' : '') + '1"]').triggerHandler('click');
+		}
+	}).on('keyup', function (event) {
 		if (event.key == 'Enter')
 		{
 			$content.find('.submit-btn').triggerHandler('click');
@@ -426,20 +431,25 @@ function updatePicker($input)
 		$input.data('viewtime', $input.data('viewtime').hour(($input.data('viewtime').hour() + 12) % 24));
 		updateView($input);
 	}).on('keydown', function (event) {
+		if (event.key == 'ArrowDown' || event.key == 'ArrowUp')
+		{
+			$content.find('.chevron-btn[data-unit="meridiem"][data-step="' + ((event.key == 'ArrowDown') ? '-' : '') + '1"]').triggerHandler('click');
+		}
+	}).on('keyup', function (event) {
 		const key = event.key.toUpperCase();
-		const hour = $input.data('viewtime').hour();
-		let offset = 0;
-		if (key == 'A' && hour > 12)
+		let hour = $hour_input.val();
+		hour = (hour.length > 0) ? parseInt(hour) : NaN;
+		if ((key == 'A' || key == 'P') && hour !== NaN)
 		{
-			offset = -12;
-		}
-		else if (key == 'P' && hour < 11)
-		{
-			offset = 12;
-		}
-		if (offset != 0)
-		{
-			$input.data('viewtime', $input.data('viewtime').hour(hour + offset));
+			if (key == 'A' && hour > 11)
+			{
+				hour -= 12;
+			}
+			else if (key == 'P' && hour < 12)
+			{
+				hour += 12;
+			}
+			$input.data('viewtime', $input.data('viewtime').hour(hour));
 			updateView($input);
 		}
 	});
